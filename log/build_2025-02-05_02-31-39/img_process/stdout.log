@@ -1,0 +1,3 @@
+[ 50%] [32mBuilding CXX object CMakeFiles/img_process_node.dir/src/image_process.cpp.o[0m
+[100%] [32m[1mLinking CXX executable img_process_node[0m
+[100%] Built target img_process_node

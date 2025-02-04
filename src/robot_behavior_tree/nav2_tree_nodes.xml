@@ -1,0 +1,7 @@
+<root>
+    <TreeNodesModel>
+        <Action ID="NavigateToPose">
+            <input_port default="{goal}" name="goal">Goal</input_port>
+        </Action>
+    </TreeNodesModel>
+</root>

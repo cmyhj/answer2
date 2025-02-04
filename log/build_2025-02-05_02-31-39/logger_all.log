@@ -1,0 +1,234 @@
+[0.046s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build']
+[0.047s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=32, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x77df3df68eb0>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x77df3df68a60>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x77df3df68a60>>)
+[0.122s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.122s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.122s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.122s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.122s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.122s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.122s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2'
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.122s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.127s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/config) by extensions ['ignore', 'ignore_ament_install']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/config) by extension 'ignore'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/config) by extension 'ignore_ament_install'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/config) by extensions ['colcon_pkg']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/config) by extension 'colcon_pkg'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/config) by extensions ['colcon_meta']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/config) by extension 'colcon_meta'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/config) by extensions ['ros']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/config) by extension 'ros'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/config) by extensions ['cmake', 'python']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/config) by extension 'cmake'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/config) by extension 'python'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/config) by extensions ['python_setup_py']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/config) by extension 'python_setup_py'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/img_proess) by extensions ['ignore', 'ignore_ament_install']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/img_proess) by extension 'ignore'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/img_proess) by extension 'ignore_ament_install'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/img_proess) by extensions ['colcon_pkg']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/img_proess) by extension 'colcon_pkg'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/img_proess) by extensions ['colcon_meta']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/img_proess) by extension 'colcon_meta'
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/img_proess) by extensions ['ros']
+[0.128s] Level 1:colcon.colcon_core.package_identification:_identify(src/img_proess) by extension 'ros'
+[0.130s] DEBUG:colcon.colcon_core.package_identification:Package 'src/img_proess' with type 'ros.ament_cmake' and name 'img_process'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/launch) by extensions ['ignore', 'ignore_ament_install']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/launch) by extension 'ignore'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/launch) by extension 'ignore_ament_install'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/launch) by extensions ['colcon_pkg']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/launch) by extension 'colcon_pkg'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/launch) by extensions ['colcon_meta']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/launch) by extension 'colcon_meta'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/launch) by extensions ['ros']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/launch) by extension 'ros'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/launch) by extensions ['cmake', 'python']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/launch) by extension 'cmake'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/launch) by extension 'python'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/launch) by extensions ['python_setup_py']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/launch) by extension 'python_setup_py'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/nav2_pure_pursuit_controller) by extensions ['ignore', 'ignore_ament_install']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/nav2_pure_pursuit_controller) by extension 'ignore'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/nav2_pure_pursuit_controller) by extension 'ignore_ament_install'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/nav2_pure_pursuit_controller) by extensions ['colcon_pkg']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/nav2_pure_pursuit_controller) by extension 'colcon_pkg'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/nav2_pure_pursuit_controller) by extensions ['colcon_meta']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/nav2_pure_pursuit_controller) by extension 'colcon_meta'
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/nav2_pure_pursuit_controller) by extensions ['ros']
+[0.130s] Level 1:colcon.colcon_core.package_identification:_identify(src/nav2_pure_pursuit_controller) by extension 'ros'
+[0.131s] DEBUG:colcon.colcon_core.package_identification:Package 'src/nav2_pure_pursuit_controller' with type 'ros.ament_cmake' and name 'nav2_pure_pursuit_controller'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_behavior_tree) by extensions ['ignore', 'ignore_ament_install']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_behavior_tree) by extension 'ignore'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_behavior_tree) by extension 'ignore_ament_install'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_behavior_tree) by extensions ['colcon_pkg']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_behavior_tree) by extension 'colcon_pkg'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_behavior_tree) by extensions ['colcon_meta']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_behavior_tree) by extension 'colcon_meta'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_behavior_tree) by extensions ['ros']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_behavior_tree) by extension 'ros'
+[0.131s] DEBUG:colcon.colcon_core.package_identification:Package 'src/robot_behavior_tree' with type 'ros.ament_cmake' and name 'robot_behavior_tree'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_decision_maker) by extensions ['ignore', 'ignore_ament_install']
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_decision_maker) by extension 'ignore'
+[0.131s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_decision_maker) by extension 'ignore_ament_install'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_decision_maker) by extensions ['colcon_pkg']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_decision_maker) by extension 'colcon_pkg'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_decision_maker) by extensions ['colcon_meta']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_decision_maker) by extension 'colcon_meta'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_decision_maker) by extensions ['ros']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_decision_maker) by extension 'ros'
+[0.132s] DEBUG:colcon.colcon_core.package_identification:Package 'src/robot_bt_decision_maker' with type 'ros.ament_cmake' and name 'robot_bt_decision_maker'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_navigator) by extensions ['ignore', 'ignore_ament_install']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_navigator) by extension 'ignore'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_navigator) by extension 'ignore_ament_install'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_navigator) by extensions ['colcon_pkg']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_navigator) by extension 'colcon_pkg'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_navigator) by extensions ['colcon_meta']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_navigator) by extension 'colcon_meta'
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_navigator) by extensions ['ros']
+[0.132s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bt_navigator) by extension 'ros'
+[0.133s] DEBUG:colcon.colcon_core.package_identification:Package 'src/robot_bt_navigator' with type 'ros.ament_cmake' and name 'robot_bt_navigator'
+[0.133s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.133s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.133s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.133s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.133s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.147s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[0.147s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[0.148s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 2 installed packages in /home/cmyhj/Documents/rm/sentry/livox_ws/install
+[0.148s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 370 installed packages in /opt/ros/humble
+[0.149s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[0.168s] Level 5:colcon.colcon_core.verb:set package 'img_process' build argument 'cmake_args' from command line to 'None'
+[0.168s] Level 5:colcon.colcon_core.verb:set package 'img_process' build argument 'cmake_target' from command line to 'None'
+[0.168s] Level 5:colcon.colcon_core.verb:set package 'img_process' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.168s] Level 5:colcon.colcon_core.verb:set package 'img_process' build argument 'cmake_clean_cache' from command line to 'False'
+[0.168s] Level 5:colcon.colcon_core.verb:set package 'img_process' build argument 'cmake_clean_first' from command line to 'False'
+[0.168s] Level 5:colcon.colcon_core.verb:set package 'img_process' build argument 'cmake_force_configure' from command line to 'False'
+[0.168s] Level 5:colcon.colcon_core.verb:set package 'img_process' build argument 'ament_cmake_args' from command line to 'None'
+[0.168s] Level 5:colcon.colcon_core.verb:set package 'img_process' build argument 'catkin_cmake_args' from command line to 'None'
+[0.168s] Level 5:colcon.colcon_core.verb:set package 'img_process' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.168s] DEBUG:colcon.colcon_core.verb:Building package 'img_process' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/build/img_process', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/img_process', 'merge_install': False, 'path': '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/img_proess', 'symlink_install': False, 'test_result_base': None}
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'nav2_pure_pursuit_controller' build argument 'cmake_args' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'nav2_pure_pursuit_controller' build argument 'cmake_target' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'nav2_pure_pursuit_controller' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'nav2_pure_pursuit_controller' build argument 'cmake_clean_cache' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'nav2_pure_pursuit_controller' build argument 'cmake_clean_first' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'nav2_pure_pursuit_controller' build argument 'cmake_force_configure' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'nav2_pure_pursuit_controller' build argument 'ament_cmake_args' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'nav2_pure_pursuit_controller' build argument 'catkin_cmake_args' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'nav2_pure_pursuit_controller' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.169s] DEBUG:colcon.colcon_core.verb:Building package 'nav2_pure_pursuit_controller' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/build/nav2_pure_pursuit_controller', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/nav2_pure_pursuit_controller', 'merge_install': False, 'path': '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/nav2_pure_pursuit_controller', 'symlink_install': False, 'test_result_base': None}
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_behavior_tree' build argument 'cmake_args' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_behavior_tree' build argument 'cmake_target' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_behavior_tree' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_behavior_tree' build argument 'cmake_clean_cache' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_behavior_tree' build argument 'cmake_clean_first' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_behavior_tree' build argument 'cmake_force_configure' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_behavior_tree' build argument 'ament_cmake_args' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_behavior_tree' build argument 'catkin_cmake_args' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_behavior_tree' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.169s] DEBUG:colcon.colcon_core.verb:Building package 'robot_behavior_tree' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/build/robot_behavior_tree', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_behavior_tree', 'merge_install': False, 'path': '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/robot_behavior_tree', 'symlink_install': False, 'test_result_base': None}
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_decision_maker' build argument 'cmake_args' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_decision_maker' build argument 'cmake_target' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_decision_maker' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_decision_maker' build argument 'cmake_clean_cache' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_decision_maker' build argument 'cmake_clean_first' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_decision_maker' build argument 'cmake_force_configure' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_decision_maker' build argument 'ament_cmake_args' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_decision_maker' build argument 'catkin_cmake_args' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_decision_maker' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.169s] DEBUG:colcon.colcon_core.verb:Building package 'robot_bt_decision_maker' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/build/robot_bt_decision_maker', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_bt_decision_maker', 'merge_install': False, 'path': '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/robot_bt_decision_maker', 'symlink_install': False, 'test_result_base': None}
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_navigator' build argument 'cmake_args' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_navigator' build argument 'cmake_target' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_navigator' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_navigator' build argument 'cmake_clean_cache' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_navigator' build argument 'cmake_clean_first' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_navigator' build argument 'cmake_force_configure' from command line to 'False'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_navigator' build argument 'ament_cmake_args' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_navigator' build argument 'catkin_cmake_args' from command line to 'None'
+[0.169s] Level 5:colcon.colcon_core.verb:set package 'robot_bt_navigator' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.169s] DEBUG:colcon.colcon_core.verb:Building package 'robot_bt_navigator' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/build/robot_bt_navigator', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_bt_navigator', 'merge_install': False, 'path': '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/robot_bt_navigator', 'symlink_install': False, 'test_result_base': None}
+[0.169s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.170s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.170s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/robot_behavior_tree' with build type 'ament_cmake'
+[0.170s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/robot_behavior_tree'
+[0.171s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.172s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.172s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.173s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/img_proess' with build type 'ament_cmake'
+[0.173s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/img_proess'
+[0.174s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.174s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.175s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/nav2_pure_pursuit_controller' with build type 'ament_cmake'
+[0.175s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/nav2_pure_pursuit_controller'
+[0.175s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.175s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.181s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/build/robot_behavior_tree': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/robot_behavior_tree -DCMAKE_INSTALL_PREFIX=/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_behavior_tree
+[0.182s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/build/img_process': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/cmyhj/Documents/homework-2025-v1.1/release/answer2/build/img_process -- -j32 -l32
+[0.183s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/build/nav2_pure_pursuit_controller': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/cmyhj/Documents/homework-2025-v1.1/release/answer2/build/nav2_pure_pursuit_controller -- -j32 -l32
+[0.513s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/build/robot_behavior_tree' returned '1': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/robot_behavior_tree -DCMAKE_INSTALL_PREFIX=/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_behavior_tree
+[0.522s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(robot_behavior_tree)
+[0.523s] Level 1:colcon.colcon_core.environment:checking '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_behavior_tree' for CMake module files
+[0.524s] Level 1:colcon.colcon_core.environment:checking '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_behavior_tree' for CMake config files
+[0.524s] Level 1:colcon.colcon_core.environment:checking '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_behavior_tree/bin'
+[0.524s] Level 1:colcon.colcon_core.environment:checking '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_behavior_tree/lib/pkgconfig/robot_behavior_tree.pc'
+[0.525s] Level 1:colcon.colcon_core.environment:checking '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_behavior_tree/lib/python3.10/site-packages'
+[0.525s] Level 1:colcon.colcon_core.environment:checking '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_behavior_tree/bin'
+[0.525s] INFO:colcon.colcon_core.shell:Creating package script '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_behavior_tree/share/robot_behavior_tree/package.ps1'
+[0.526s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_behavior_tree/share/robot_behavior_tree/package.dsv'
+[0.526s] INFO:colcon.colcon_core.shell:Creating package script '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_behavior_tree/share/robot_behavior_tree/package.sh'
+[0.526s] INFO:colcon.colcon_core.shell:Creating package script '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_behavior_tree/share/robot_behavior_tree/package.bash'
+[0.527s] INFO:colcon.colcon_core.shell:Creating package script '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_behavior_tree/share/robot_behavior_tree/package.zsh'
+[0.527s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/robot_behavior_tree/share/colcon-core/packages/robot_behavior_tree)
+[7.435s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[7.435s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[7.435s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '1'
+[7.435s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[7.441s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[7.442s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[7.442s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[7.457s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[7.457s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/local_setup.ps1'
+[7.458s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/_local_setup_util_ps1.py'
+[7.459s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/setup.ps1'
+[7.460s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/local_setup.sh'
+[7.460s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/_local_setup_util_sh.py'
+[7.460s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/setup.sh'
+[7.461s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/local_setup.bash'
+[7.461s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/setup.bash'
+[7.462s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/local_setup.zsh'
+[7.462s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/setup.zsh'

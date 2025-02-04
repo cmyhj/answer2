@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<root main_tree_to_execute="AnswerBehaviorTree">
+    <!-- ////////// -->
+    <BehaviorTree ID="AnswerBehaviorTree">
+        <ReactiveSequence>
+            <Action ID="UpdateMapInfo" enemy_pose_x="" enemy_pose_y=""/>
+            <Action ID="AimEnemy" enemy_pose_x="" enemy_pose_y=""/>
+        </ReactiveSequence>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <TreeNodesModel>
+        <Action ID="AimEnemy">
+            <input_port name="enemy_pose_x"/>
+            <input_port name="enemy_pose_y"/>
+        </Action>
+        <Action ID="UpdateMapInfo">
+            <output_port name="enemy_pose_x"/>
+            <output_port name="enemy_pose_y"/>
+        </Action>
+    </TreeNodesModel>
+    <!-- ////////// -->
+</root>
