@@ -1,5 +1,0 @@
-[ 50%] [32mBuilding CXX object CMakeFiles/img_process_node.dir/src/image_process.cpp.o[0m
-[100%] [32m[1mLinking CXX executable img_process_node[0m
-/usr/bin/ld: warning: libopencv_imgproc.so.4.5d, needed by /opt/ros/humble/lib/libcv_bridge.so, may conflict with libopencv_imgproc.so.411
-/usr/bin/ld: warning: libopencv_core.so.4.5d, needed by /opt/ros/humble/lib/libcv_bridge.so, may conflict with libopencv_core.so.411
-[100%] Built target img_process_node

@@ -1,1 +1,0 @@
-Invoking command in '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/build/img_process': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake /home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/img_proess -DCMAKE_INSTALL_PREFIX=/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/install/img_process

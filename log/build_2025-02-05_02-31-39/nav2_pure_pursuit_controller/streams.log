@@ -1,4 +1,0 @@
-[0.008s] Invoking command in '/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/build/nav2_pure_pursuit_controller': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble /usr/bin/cmake --build /home/cmyhj/Documents/homework-2025-v1.1/release/answer2/build/nav2_pure_pursuit_controller -- -j32 -l32
-[0.043s] [ 50%] [32mBuilding CXX object CMakeFiles/nav2_pure_pursuit_controller.dir/src/pure_pursuit_controller.cpp.o[0m
-[3.633s] [100%] [32m[1mLinking CXX shared library libnav2_pure_pursuit_controller.so[0m
-[3.797s] [100%] Built target nav2_pure_pursuit_controller
