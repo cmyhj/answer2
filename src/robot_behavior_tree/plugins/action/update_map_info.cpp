@@ -13,7 +13,7 @@ namespace nav2_behavior_tree
         callback_group_executor_.add_callback_group(callback_group_, node_->get_node_base_interface());
         rclcpp::SubscriptionOptions sub_option;
         sub_option.callback_group = callback_group_;
-        enemy_pose_sub_= node_->create_subscription<geometry_msgs::msg::PoseStamped>(
+        map_info_sub_= node_->create_subscription<robot_msgs::msg::MapInfoMsgs>(
             "/map_info",
             rclcpp::SystemDefaultsQoS(),
             std::bind(&UpdateMapInfoAction::mapInfoCallback, this, std::placeholders::_1),
@@ -38,18 +38,26 @@ namespace nav2_behavior_tree
         return BT::NodeStatus::SUCCESS;
     }
 
-    void UpdateMapInfoAction::mapInfoCallback(const geometry_msgs::msg::PoseStamped::SharedPtr msg)
+    void UpdateMapInfoAction::mapInfoCallback(const robot_msgs::msg::MapInfoMsgs::SharedPtr msg)
     {
-        // 打印接收到的 PoseStamped 消息的相关信息
-        std::cout << "Received enemy_pose update:" << std::endl;
-        std::cout << "Position (x, y, z): (" 
-                << msg->pose.position.x << ", " 
-                << msg->pose.position.y << ", " 
-                << msg->pose.position.z << ")" << std::endl;
-
         // 将消息设置为输出
-        config().blackboard->set<double>("enemy_pose_x", msg->pose.position.x);
-        config().blackboard->set<double>("enemy_pose_y", msg->pose.position.y);
+        config().blackboard->set<double>("star_pose_x", msg->map_info[STAR].pos.x);
+        config().blackboard->set<double>("star_pose_y", msg->map_info[STAR].pos.y);
+        config().blackboard->set<double>("base_pose_x", msg->map_info[BASE].pos.x);
+        config().blackboard->set<double>("base_pose_y", msg->map_info[BASE].pos.y);
+        config().blackboard->set<double>("enemy_base_pose_x", msg->map_info[ENEMY_BASE].pos.x);
+        config().blackboard->set<double>("enemy_base_pose_y", msg->map_info[ENEMY_BASE].pos.y);
+        config().blackboard->set<double>("purple_entry_pose_x", msg->map_info[PURPLEENTRY].pos.x);
+        config().blackboard->set<double>("purple_entry_pose_y", msg->map_info[PURPLEENTRY].pos.y);
+        config().blackboard->set<double>("green_entry_pose_x", msg->map_info[GREENENTRY].pos.x);
+        config().blackboard->set<double>("green_entry_pose_y", msg->map_info[GREENENTRY].pos.y);
+        config().blackboard->set<double>("sentry_pose_x", msg->map_info[SENTRY].pos.x);
+        config().blackboard->set<double>("sentry_pose_y", msg->map_info[SENTRY].pos.y);
+        config().blackboard->set<double>("enemy_pose_x", msg->map_info[ENEMY].pos.x);
+        config().blackboard->set<double>("enemy_pose_y", msg->map_info[ENEMY].pos.y);
+        config().blackboard->set<int>("enemy_num", msg->enemy_num);
+        config().blackboard->set<double>("sentry_HP", msg->sentry_hp);
+        config().blackboard->set<bool>("is_transfering", msg->is_transfering);
     }
 } // namespace nav2_behavior_tree
 

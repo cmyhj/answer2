@@ -10,7 +10,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(nav2_behavior_tree REQUIRED)
 find_package(behaviortree_cpp_v3 REQUIRED)
-# find_package(robot_msgs REQUIRED)
+find_package(robot_msgs REQUIRED)
 # find_package(robot_serial REQUIRED)
 find_package(geometry_msgs REQUIRED)
 
@@ -21,7 +21,7 @@ set(dependencies
   rclcpp
   nav2_behavior_tree
   behaviortree_cpp_v3
-  # robot_msgs
+  robot_msgs
   # robot_serial
   geometry_msgs
 )
@@ -29,8 +29,14 @@ set(dependencies
 add_library(aim_enemy_action_bt_node SHARED plugins/action/aim_enemy.cpp)
 list(APPEND plugin_libs aim_enemy_action_bt_node)
 
+add_library(go_base_action_bt_node SHARED plugins/action/go_base.cpp)
+list(APPEND plugin_libs go_base_action_bt_node)
+
 add_library(update_map_info_action_bt_node SHARED plugins/action/update_map_info.cpp)
 list(APPEND plugin_libs update_map_info_action_bt_node)
+
+add_library(if_HP_or_bullet_low_condition_bt_node SHARED plugins/condition/if_HP_or_bullet_low.cpp)
+list(APPEND plugin_libs if_HP_or_bullet_low_condition_bt_node)
 
 
 foreach(bt_plugin ${plugin_libs})

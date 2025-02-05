@@ -1,0 +1,106 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-a03c9d43174e877886db.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "robot_behavior_tree",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "aim_enemy_action_bt_node::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-aim_enemy_action_bt_node-Debug-467f517dfb6f78718730.json",
+					"name" : "aim_enemy_action_bt_node",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "go_base_action_bt_node::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-go_base_action_bt_node-Debug-3accd1df3829230db249.json",
+					"name" : "go_base_action_bt_node",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "if_HP_or_bullet_low_condition_bt_node::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-if_HP_or_bullet_low_condition_bt_node-Debug-3c855a04a6e5abac28fc.json",
+					"name" : "if_HP_or_bullet_low_condition_bt_node",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "robot_behavior_tree_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-robot_behavior_tree_uninstall-Debug-0749d64cdd3b9317f37e.json",
+					"name" : "robot_behavior_tree_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-Debug-b126eb4c623de55d446d.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "update_map_info_action_bt_node::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-update_map_info_action_bt_node-Debug-043ba7c48ce62c0dece8.json",
+					"name" : "update_map_info_action_bt_node",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/robot_behavior_tree/cmake-build-debug",
+		"source" : "/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/robot_behavior_tree"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

@@ -16,8 +16,10 @@
   <depend>common_interfaces</depend>
   <depend>geometry_msgs</depend>
   <depend>nav_msgs</depend>
+  <depend>robot_msgs</depend>
   <depend>OpenCV</depend>
   <depend>cv_bridge</depend>
+  <depend>example_interfaces</depend>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>rosidl_default_generators</buildtool_depend>

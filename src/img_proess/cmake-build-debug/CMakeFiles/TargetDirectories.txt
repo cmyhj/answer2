@@ -1,0 +1,10 @@
+/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/img_proess/cmake-build-debug/CMakeFiles/uninstall.dir
+/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/img_proess/cmake-build-debug/CMakeFiles/img_process_uninstall.dir
+/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/img_proess/cmake-build-debug/CMakeFiles/img_process_node.dir
+/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/img_proess/cmake-build-debug/CMakeFiles/test.dir
+/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/img_proess/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/img_proess/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/img_proess/cmake-build-debug/CMakeFiles/list_install_components.dir
+/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/img_proess/cmake-build-debug/CMakeFiles/install.dir
+/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/img_proess/cmake-build-debug/CMakeFiles/install/local.dir
+/home/cmyhj/Documents/homework-2025-v1.1/release/answer2/src/img_proess/cmake-build-debug/CMakeFiles/install/strip.dir

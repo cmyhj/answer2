@@ -13,6 +13,9 @@ ament_auto_find_build_dependencies()
 find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
+find_package(example_interfaces REQUIRED)
+find_package(robot_msgs REQUIRED)
+
 ament_auto_add_executable(img_process_node src/image_process.cpp)
 target_compile_features(img_process_node PUBLIC c_std_99 cxx_std_17)
 #include_directories(include)
@@ -23,6 +26,8 @@ ament_target_dependencies(img_process_node
   geometry_msgs
   tf2_ros
   tf2
+  robot_msgs
+  example_interfaces
 )
 
 include_directories(${SENSOR_MSGS_INCLUDE_DIRS})

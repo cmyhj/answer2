@@ -136,13 +136,14 @@ geometry_msgs::msg::TwistStamped PurePursuitController::computeVelocityCommands(
       return hypot(ps.pose.position.x, ps.pose.position.y) >= lookahead_dist_;
     });
 
+  double linear_vel_x,linear_vel_y;
   // If the last pose is still within lookahed distance, take the last pose
   if (goal_pose_it == transformed_plan.poses.end()) {
     goal_pose_it = std::prev(transformed_plan.poses.end());
   }
   auto goal_pose = goal_pose_it->pose;
 
-  double linear_vel_x,linear_vel_y;
+  
 
   // If the goal pose is in front of the robot then compute the velocity using the pure pursuit
   // algorithm, else rotate with the max angular velocity until the goal pose is in front of the
@@ -181,6 +182,7 @@ geometry_msgs::msg::TwistStamped PurePursuitController::computeVelocityCommands(
   }else {
     linear_vel_y = 0.0;
   }
+  
   // RCLCPP_WARN(logger_, "goalpose:x=%f y=%f",goal_pose.position.x,goal_pose.position.y);
   // Create and publish a TwistStamped message with the desired velocity
   geometry_msgs::msg::TwistStamped cmd_vel;

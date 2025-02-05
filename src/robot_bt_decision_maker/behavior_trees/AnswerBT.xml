@@ -3,8 +3,14 @@
     <!-- ////////// -->
     <BehaviorTree ID="AnswerBehaviorTree">
         <ReactiveSequence>
-            <Action ID="UpdateMapInfo" enemy_pose_x="" enemy_pose_y=""/>
-            <Action ID="AimEnemy" enemy_pose_x="" enemy_pose_y=""/>
+            <Action ID="UpdateMapInfo" base_pose_x="0.0" base_pose_y="0.0" enemy_base_pose_x="0.0" enemy_base_pose_y="0.0" enemy_num="0.0" enemy_pose_x="0.0" enemy_pose_y="0.0" green_entry_pose_x="0.0" green_entry_pose_y="0.0" purple_entry_pose_x="0.0" purple_entry_pose_y="0.0" sentry_HP="0.0" sentry_pose_x="0.0" sentry_pose_y="0.0" star_pose_x="0.0" star_pose_y="0.0"/>
+            <Fallback>
+                <Sequence>
+                    <Condition ID="IfHPOrBulletLow" sentry_HP=""/>
+                    <Action ID="GoBase" base_pose_x="" base_pose_y=""/>
+                </Sequence>
+                <Action ID="AimEnemy" enemy_pose_x="" enemy_pose_y=""/>
+            </Fallback>
         </ReactiveSequence>
     </BehaviorTree>
     <!-- ////////// -->
@@ -13,9 +19,30 @@
             <input_port name="enemy_pose_x"/>
             <input_port name="enemy_pose_y"/>
         </Action>
+        <Action ID="GoBase">
+            <input_port name="base_pose_x"/>
+            <input_port name="base_pose_y"/>
+        </Action>
+        <Condition ID="IfHPOrBulletLow">
+            <input_port name="sentry_HP">Sentry health points</input_port>
+        </Condition>
         <Action ID="UpdateMapInfo">
+            <output_port name="base_pose_x"/>
+            <output_port name="base_pose_y"/>
+            <output_port name="enemy_base_pose_x"/>
+            <output_port name="enemy_base_pose_y"/>
+            <output_port name="enemy_num"/>
             <output_port name="enemy_pose_x"/>
             <output_port name="enemy_pose_y"/>
+            <output_port name="green_entry_pose_x"/>
+            <output_port name="green_entry_pose_y"/>
+            <output_port name="purple_entry_pose_x"/>
+            <output_port name="purple_entry_pose_y"/>
+            <output_port name="sentry_HP"/>
+            <output_port name="sentry_pose_x"/>
+            <output_port name="sentry_pose_y"/>
+            <output_port name="star_pose_x"/>
+            <output_port name="star_pose_y"/>
         </Action>
     </TreeNodesModel>
     <!-- ////////// -->

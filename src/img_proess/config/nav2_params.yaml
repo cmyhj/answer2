@@ -82,6 +82,8 @@ robot_bt_decision_maker_node:
         plugin_lib_names:
             - aim_enemy_action_bt_node
             - update_map_info_action_bt_node
+            - go_base_action_bt_node
+            - if_HP_or_bullet_low_condition_bt_node
             # - nav2_navigate_to_pose_action_bt_node
 robot_bt_decision_maker_node_rclcpp_node:
     ros__parameters:
@@ -90,7 +92,7 @@ robot_bt_decision_maker_node_rclcpp_node:
 
 controller_server:
   ros__parameters:
-    controller_frequency: 20.0
+    controller_frequency: 60.0
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.001
     min_theta_velocity_threshold: 0.001
@@ -120,10 +122,10 @@ controller_server:
       plugin: "nav2_pure_pursuit_controller::PurePursuitController" # In Iron and older versions, "/" was used instead of "::"
       debug_trajectory_details: True
       desired_linear_vel: 1.0
-      lookahead_dist: 0.4
+      lookahead_dist: 0.5
       max_angular_vel: 1.0
       transform_tolerance: 1.0
-      target_xy_tolerance: 0.01
+      target_xy_tolerance: 0.2
 
 
 local_costmap:
@@ -189,7 +191,7 @@ planner_server:
     planner_plugins: ["GridBased"]
     GridBased:
       plugin: "nav2_navfn_planner/NavfnPlanner"
-      tolerance: 0.5
+      tolerance: 0.2
       use_astar: true # 是否使用A*。如果错误，则使用Dijkstra的扩展。
       allow_unknown: true # 是否允许在未知空间进行规划。
       use_final_approach_orientation: true # 如果为true，则由planner产生的路径的最后姿态将其方向设置为进近方向，即连接路径最后两点的向量的方向
