@@ -84,6 +84,9 @@ robot_bt_decision_maker_node:
             - update_map_info_action_bt_node
             - go_base_action_bt_node
             - if_HP_or_bullet_low_condition_bt_node
+            - go_enemy_base_action_bt_node
+            - go_star_action_bt_node
+            - is_have_key_condition_bt_node
             # - nav2_navigate_to_pose_action_bt_node
 robot_bt_decision_maker_node_rclcpp_node:
     ros__parameters:

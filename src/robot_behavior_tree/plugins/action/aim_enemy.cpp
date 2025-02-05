@@ -14,24 +14,40 @@ namespace nav2_behavior_tree
     {
         node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
         goal_pub_ = node_->create_publisher<geometry_msgs::msg::PoseStamped>("/goal_pose", 10);
-        enemy_pose.header.stamp = node_->now();
-        enemy_pose.header.frame_id = "map";
-        enemy_pose.pose.position.x = 0.0;
-        enemy_pose.pose.position.y = 0.0;
-        enemy_pose.pose.position.z = 0.0;
-        enemy_pose.pose.orientation.x = 0.0;
-        enemy_pose.pose.orientation.y = 0.0;
-        enemy_pose.pose.orientation.z = 0.0;
-        enemy_pose.pose.orientation.w = 1.0;
+        goal_pose.header.stamp = node_->now();
+        goal_pose.header.frame_id = "map";
+        goal_pose.pose.position.x = 0.0;
+        goal_pose.pose.position.y = 0.0;
+        goal_pose.pose.position.z = 0.0;
+        goal_pose.pose.orientation.x = 0.0;
+        goal_pose.pose.orientation.y = 0.0;
+        goal_pose.pose.orientation.z = 0.0;
+        goal_pose.pose.orientation.w = 1.0;
     }
 
     BT::NodeStatus AimEnemyAction::tick()
     {
-        enemy_pose.header.stamp = node_->now();
-        enemy_pose.pose.position.x=config().blackboard->get<double>("enemy_pose_x");
-        enemy_pose.pose.position.y=config().blackboard->get<double>("enemy_pose_y");
-        goal_pub_->publish(enemy_pose);
-        std::cout<<"更新目标点"<<enemy_pose.pose.position.x<<" , "<<enemy_pose.pose.position.y<<std::endl;
+        is_enemy_out_of_range = config().blackboard->get<bool>("is_enemy_out_of_range");
+        is_sentry_out_of_range = config().blackboard->get<bool>("is_sentry_out_of_range");
+        is_purple_entry_out_of_range = config().blackboard->get<bool>("is_purple_entry_out_of_range");
+        is_green_entry_out_of_range = config().blackboard->get<bool>("is_green_entry_out_of_range");
+        if (is_enemy_out_of_range==is_sentry_out_of_range){
+            goal_pose.pose.position.x=config().blackboard->get<double>("enemy_pose_x");
+            goal_pose.pose.position.y=config().blackboard->get<double>("enemy_pose_y");
+        }else if(is_sentry_out_of_range==is_purple_entry_out_of_range){
+            goal_pose.pose.position.x=config().blackboard->get<double>("purple_entry_pose_x");
+            goal_pose.pose.position.y=config().blackboard->get<double>("purple_entry_pose_y");
+        }else if(is_sentry_out_of_range==is_green_entry_out_of_range){
+            goal_pose.pose.position.x=config().blackboard->get<double>("green_entry_pose_x");
+            goal_pose.pose.position.y=config().blackboard->get<double>("green_entry_pose_y");
+        }else{
+            std::cout<<"error:两个传送门识别错误"<<std::endl;
+            return BT::NodeStatus::FAILURE;
+        }
+        
+        goal_pose.header.stamp = node_->now();
+        goal_pub_->publish(goal_pose);
+        std::cout<<"更新目标点"<<goal_pose.pose.position.x<<" , "<<goal_pose.pose.position.y<<std::endl;
         return BT::NodeStatus::SUCCESS;
     }
 } // namespace nav2_behavior_tree

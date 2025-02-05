@@ -32,6 +32,12 @@ list(APPEND plugin_libs aim_enemy_action_bt_node)
 add_library(go_base_action_bt_node SHARED plugins/action/go_base.cpp)
 list(APPEND plugin_libs go_base_action_bt_node)
 
+add_library(go_enemy_base_action_bt_node SHARED plugins/action/go_enemy_base.cpp)
+list(APPEND plugin_libs go_enemy_base_action_bt_node)
+
+add_library(go_star_action_bt_node SHARED plugins/action/go_star.cpp)
+list(APPEND plugin_libs go_star_action_bt_node)
+
 add_library(update_map_info_action_bt_node SHARED plugins/action/update_map_info.cpp)
 list(APPEND plugin_libs update_map_info_action_bt_node)
 

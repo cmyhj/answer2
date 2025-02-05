@@ -28,12 +28,24 @@ namespace nav2_behavior_tree
             return {
                     BT::InputPort<double>("base_pose_x", "Base position x"),
                     BT::InputPort<double>("base_pose_y", "Base position y"),
+                    BT::InputPort<double>("purple_entry_pose_x", "Purple entry position x"),
+                    BT::InputPort<double>("purple_entry_pose_y", "Purple entry position y"),
+                    BT::InputPort<double>("green_entry_pose_x", "Green entry position x"),
+                    BT::InputPort<double>("green_entry_pose_y", "Green entry position y"),
+                    BT::InputPort<bool>("is_purple_entry_out_of_range", "is purple entry out of range?"),
+                    BT::InputPort<bool>("is_green_entry_out_of_range", "is green entry out of range?"),
+                    BT::InputPort<bool>("is_sentry_out_of_range", "is sentry out of range?"),
+                    BT::InputPort<bool>("is_enemy_out_of_range", "is enemy out of range?")
                 };
         }
 
     private:
         rclcpp::Node::SharedPtr node_;
-        geometry_msgs::msg::PoseStamped base_pose_;
+        bool is_enemy_out_of_range;
+        bool is_sentry_out_of_range;
+        bool is_purple_entry_out_of_range;
+        bool is_green_entry_out_of_range;
+        geometry_msgs::msg::PoseStamped goal_pose;
         rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr goal_pub_;
     };
 

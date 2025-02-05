@@ -53,7 +53,14 @@ namespace nav2_behavior_tree
                 BT::OutputPort<double>("enemy_pose_y", "Enemy position y"),
                 BT::OutputPort<int>("enemy_num", "Number of enemies"),
                 BT::OutputPort<double>("sentry_HP", "Sentry health points"),
-                BT::OutputPort<bool>("is_transfering", "is sentry transfering?")
+                BT::OutputPort<bool>("is_transfering", "is sentry transfering?"),
+                BT::OutputPort<bool>("is_star_exist", "is star exist?"),
+                BT::OutputPort<bool>("is_base_exist", "is base exist?"),
+                BT::OutputPort<bool>("is_enemy_base_exist", "is enemy base exist?"),
+                BT::OutputPort<bool>("is_purple_entry_out_of_range", "is purple entry out of range?"),
+                BT::OutputPort<bool>("is_green_entry_out_of_range", "is green entry out of range?"),
+                BT::OutputPort<bool>("is_sentry_out_of_range", "is sentry out of range?"),
+                BT::OutputPort<bool>("is_enemy_out_of_range", "is enemy out of range?")
             };
         }
 

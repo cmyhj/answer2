@@ -14,23 +14,37 @@ namespace nav2_behavior_tree
     {
         node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
         goal_pub_ = node_->create_publisher<geometry_msgs::msg::PoseStamped>("/goal_pose", 10);
-        base_pose_.header.stamp = node_->now();
-        base_pose_.header.frame_id = "map";
-        base_pose_.pose.position.x = 0.0;
-        base_pose_.pose.position.y = 0.0;
-        base_pose_.pose.position.z = 0.0;
-        base_pose_.pose.orientation.x = 0.0;
-        base_pose_.pose.orientation.y = 0.0;
-        base_pose_.pose.orientation.z = 0.0;
-        base_pose_.pose.orientation.w = 1.0;
+        goal_pose.header.stamp = node_->now();
+        goal_pose.header.frame_id = "map";
+        goal_pose.pose.position.x = 0.0;
+        goal_pose.pose.position.y = 0.0;
+        goal_pose.pose.position.z = 0.0;
+        goal_pose.pose.orientation.x = 0.0;
+        goal_pose.pose.orientation.y = 0.0;
+        goal_pose.pose.orientation.z = 0.0;
+        goal_pose.pose.orientation.w = 1.0;
     }
 
     BT::NodeStatus GoBaseAction::tick()
     {
-        base_pose_.header.stamp = node_->now();
-        base_pose_.pose.position.x=config().blackboard->get<double>("base_pose_x");
-        base_pose_.pose.position.y=config().blackboard->get<double>("base_pose_y");
-        goal_pub_->publish(base_pose_);
+        is_sentry_out_of_range = config().blackboard->get<bool>("is_sentry_out_of_range");
+        is_purple_entry_out_of_range = config().blackboard->get<bool>("is_purple_entry_out_of_range");
+        is_green_entry_out_of_range = config().blackboard->get<bool>("is_green_entry_out_of_range");
+        if (is_sentry_out_of_range==true){
+            goal_pose.pose.position.x=config().blackboard->get<double>("base_pose_x");
+            goal_pose.pose.position.y=config().blackboard->get<double>("base_pose_y");
+        }else if(is_sentry_out_of_range==is_purple_entry_out_of_range){
+            goal_pose.pose.position.x=config().blackboard->get<double>("purple_entry_pose_x");
+            goal_pose.pose.position.y=config().blackboard->get<double>("purple_entry_pose_y");
+        }else if(is_sentry_out_of_range==is_green_entry_out_of_range){
+            goal_pose.pose.position.x=config().blackboard->get<double>("green_entry_pose_x");
+            goal_pose.pose.position.y=config().blackboard->get<double>("green_entry_pose_y");
+        }else{
+            std::cout<<"error:两个传送门识别错误"<<std::endl;
+            return BT::NodeStatus::FAILURE;
+        }
+        goal_pose.header.stamp = node_->now();
+        goal_pub_->publish(goal_pose);
         std::cout<<"回基地补给"<<std::endl;
         return BT::NodeStatus::SUCCESS;
     }

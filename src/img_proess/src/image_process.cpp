@@ -242,22 +242,20 @@ void imgProcess::set_map_info(const cv::Mat& Image, uint8_t type){
             break;
         case ENEMY:
         {
-            double min_dist = 1000.0;
+            double min_dist = 10000.0;
             enemy_num_=0;
             for( size_t i = 0; i < contours.size(); i++ ){
                 if (radius[i]>5 &&
-                    isFarFromEnemyBase(centers[i])&&
-                    isOutOfRange(centers[i])&&
-                    distance(centers[i],mapInfo[SENTRY].pos)<min_dist)
+                    isFarFromEnemyBase(centers[i]))
                 {
-                    min_dist = distance(centers[i],mapInfo[SENTRY].pos);
-                    mapInfo[type].pos.x = centers[i].x/40;
-                    mapInfo[type].pos.y = 12.8-centers[i].y/40;
-                    mapInfo[type].is_exist_and_out_range = true;
                     enemy_num_+=1;
-                }
-                else{
-                    mapInfo[type].is_exist_and_out_range = false;
+                    if(distance(centers[i],mapInfo[SENTRY].pos)-isOutOfRange(centers[i])*1000<min_dist)
+                    {
+                        mapInfo[type].pos.x = centers[i].x/40;
+                        mapInfo[type].pos.y = 12.8-centers[i].y/40;
+                        mapInfo[type].is_exist_and_out_range = isOutOfRange(centers[i]);
+                        min_dist = distance(centers[i],mapInfo[SENTRY].pos)-mapInfo[type].is_exist_and_out_range*1000;
+                    }
                 }
             }
         }
