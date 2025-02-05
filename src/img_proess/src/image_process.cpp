@@ -1,76 +1,65 @@
 #include "image_process.h"
-
+#define IS_OUT_RANGE(pos) \
+    ((pos).x <= MapInfo[STAR].pos.x - 2.0 || \
+     (pos).x >= MapInfo[STAR].pos.x + 2.0 || \
+     (pos).y <= MapInfo[STAR].pos.y - 1.0 || \
+     (pos).y >= MapInfo[STAR].pos.y + 1.0)
+#define IS_FAR_FROM_ENEMY_BASE(pos) \
+    ((pos).x <= MapInfo[ENEMY_BASE].pos.x - 2.0 || \
+     (pos).x >= MapInfo[ENEMY_BASE].pos.x + 2.0 || \
+     (pos).y <= MapInfo[ENEMY_BASE].pos.y - 1.0 || \
+     (pos).y >= MapInfo[ENEMY_BASE].pos.y + 1.0)
+#define DISTANCE(pos1,pos2) \
+    sqrt(pow((pos1).x-(pos2).x,2)+pow((pos1).y-(pos2).y,2))
 using namespace std::chrono_literals;
 using namespace cv;
 using namespace std;
 
 void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
+    this->get_parameter("B_low_threshold", B_low_threshold_);
+    this->get_parameter("G_low_threshold", G_low_threshold_);
+    this->get_parameter("R_low_threshold", R_low_threshold_);
+    this->get_parameter("B_high_threshold", B_high_threshold_);
+    this->get_parameter("G_high_threshold", G_high_threshold_);
+    this->get_parameter("R_high_threshold", R_high_threshold_);
     auto cvImage = cv_bridge::toCvCopy(rosImage, rosImage.encoding);
     cv::Mat img = cvImage->image;
     cvtColor(img, img, CV_RGB2BGR);
     
     //地图发布
-    auto wallColor = img.at<cv::Vec3b>(cv::Point(img.cols-1,1));
     int newWidth = 256;  // 新的宽度
     int newHeight = 128; // 新的高度
     cv::Mat mapImage,findingImage,viewImage;
     // 使用cv::resize函数降低分辨率
     cv::resize(img, mapImage, cv::Size(newWidth, newHeight), 0, 0, cv::INTER_NEAREST);
     cv::resize(img, findingImage, cv::Size(newWidth*4, newHeight*4), 0, 0, cv::INTER_NEAREST);
-    cv::resize(img, viewImage,cv::Size(newWidth*4, newHeight*4), 0, 0, cv::INTER_NEAREST);
-    //cv::circle( img,cv::Point(2040,1),8,cv::Scalar( 0, 0, 255 ),cv::FILLED,cv::LINE_8);
-    // cv::imshow("view", resizedImage);
-    // cv::waitKey(1);
     publish_map(mapImage,wallColor);
-    //哨兵tf发布
-    cv::Mat sentryImage,enemyImage;
-    cv::inRange(findingImage, cv::Scalar(220, 150, 60), cv::Scalar(255, 200, 100), sentryImage);
-    cv::inRange(findingImage, cv::Scalar(0, 0, 200), cv::Scalar(200, 200, 255), enemyImage);
-
-    //cv::medianBlur(sentryImage, sentryImage, 3);
-
-    Mat enemy_canny_output;
-    Mat sentry_canny_output;
-    Canny( enemyImage, enemy_canny_output, 255, 255*2 );
-    Canny( sentryImage, sentry_canny_output, 255, 255*2 );
- 
-    vector<vector<Point> > enemy_contours;
-    vector<Vec4i> enemy_hierarchy;
-    vector<vector<Point> > sentry_contours;
-    vector<Vec4i> sentry_hierarchy;
-
-    findContours( enemy_canny_output, enemy_contours, enemy_hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE );
-    findContours( sentry_canny_output, sentry_contours, sentry_hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE );
-
-    vector<vector<Point> > contours_poly( sentry_contours.size() );
-    vector<float>radius( sentry_contours.size() );
-    vector<Point2f>centers( sentry_contours.size() );
-    for( size_t i = 0; i < sentry_contours.size(); i++ )
+    for (size_t i = 0; i < 7; i++)
     {
-        approxPolyDP( sentry_contours[i], contours_poly[i], 3, true );
-        minEnclosingCircle( contours_poly[i], centers[i], radius[i] );
-        if(radius[i]>3){
-            cv::circle( viewImage,centers[i],int(radius[i]),cv::Scalar( 0, 0, 255 ),1);
-            robot_pos=centers[i]/40;
-            robot_pos.y=12.8-robot_pos.y;
-        }
+        set_map_info(findingImage,i)
     }
     
-    vector<vector<Point> > enemy_contours_poly( enemy_contours.size() );
-    vector<float>enemy_radius( enemy_contours.size() );
-    vector<Point2f>enemy_centers( enemy_contours.size() );
-    for( size_t i = 0; i < enemy_contours.size(); i++ )
+
+    //test
+    cv::Mat testImage;
+    cv::inRange(findingImage, cv::Scalar(B_low_threshold_, G_low_threshold_, R_low_threshold_), cv::Scalar(B_high_threshold_, G_high_threshold_, R_high_threshold_), testImage);
+    vector<vector<Point> > test_contours;
+    vector<Vec4i> test_hierarchy;
+    findContours( testImage, test_contours, test_hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE );
+    vector<vector<Point> > test_contours_poly( test_contours.size() );
+    vector<float>test_radius( test_contours.size() );
+    vector<Point2f>test_centers( test_contours.size() );
+    for( size_t i = 0; i < test_contours.size(); i++ )
     {
-        approxPolyDP( enemy_contours[i], enemy_contours_poly[i], 3, true );
-        minEnclosingCircle( enemy_contours_poly[i], enemy_centers[i], enemy_radius[i] );
+        approxPolyDP( test_contours[i], test_contours_poly[i], 3, true );
+        minEnclosingCircle( test_contours_poly[i], test_centers[i], test_radius[i] );
         if(radius[i]>3){
-            cv::circle( viewImage,enemy_centers[i],int(enemy_radius[i]),cv::Scalar( 0, 0, 255 ),1);
-            enemy_pos=enemy_centers[i]/40;
-            enemy_pos.y=12.8-enemy_pos.y;
+            cv::circle( findingImage,test_centers[i],int(test_radius[i]),cv::Scalar( 0, 0, 255 ),1);
         }
     }
-    cv::imshow("view", viewImage);
+    cv::imshow("view", findingImage);
     waitKey(1);
+
     publish_sentry_odom(pubOdomAftMapped, tf_broadcaster);
     publish_map_info();
 }
@@ -82,8 +71,6 @@ void imgProcess::cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg
     cmd_vel_pose.theta = msg->angular.z;
     pubResultCmd->publish(cmd_vel_pose);
 }
-
-
 
 void imgProcess::publish_map(const cv::Mat resizedImage,const cv::Vec3b wallColor){
     nav_msgs::msg::OccupancyGrid map;
@@ -160,8 +147,165 @@ void imgProcess::set_posestamp(T & out)
     out.orientation.w = 1.0;
 }
 
+void imgProcess::set_map_info(const cv::Mat& Image, TargetType type){
+    //寻找目标颜色
+    cv::Mat binaryImg;
+    cv::inRange(Image, cv::Scalar(color_threshold[type][0], color_threshold[type][1], color_threshold[type][2]), 
+                       cv::Scalar(color_threshold[type][3], color_threshold[type][4], color_threshold[type][5]), binaryImg);
+    vector<vector<Point> > contours;
+    vector<Vec4i> hierarchy;
+    findContours(binaryImg, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE );
+    //分类讨论
+    if(contours.size()==0){
+        MapInfo[type].is_exist_and_out_range = false;
+        return;
+    }
+    // 寻找最小外接圆
+    vector<vector<Point> > contours_poly( contours.size() );
+    vector<float>radius( contours.size() );
+    vector<Point2f>centers( contours.size() );
+    for( size_t i = 0; i < contours.size(); i++ )
+    {
+        approxPolyDP( contours[i], contours_poly[i], 3, true );
+        minEnclosingCircle( contours_poly[i], centers[i], radius[i] );
+    }
+    if (contours.size() == 1) {
+        switch (type)
+        {
+        case STAR:
+        case BASE:
+        case ENEMY_BASE:
+            if(radius[i]>3){
+                MapInfo[type].pos.x = centers[i].x/40;
+                MapInfo[type].pos.y = 12.8-centers[i].y/40;
+                MapInfo[type].is_exist_and_out_range = true;
+            }
+            else{
+                MapInfo[type].is_exist_and_out_range = false;
+            }
+            break;
+        case SENTRY:
+        case GREENENTRY:
+        case PURPLEENTRY:
+            if(radius[i]>3){
+                MapInfo[type].pos.x = centers[i].x/40;
+                MapInfo[type].pos.y = 12.8-centers[i].y/40;
+                MapInfo[type].is_exist_and_out_range = IS_OUT_RANGE(centers[i]);
+            }
+            else{
+                MapInfo[type].is_exist_and_out_range = false;
+            }
+            break;
+        case ENEMY:
+            MapInfo[type].is_exist_and_out_range = false;
+            break;
+        default:
+            break;
+        }
+    }
+    else{
+        switch (type)
+        {
+        case STAR:
+        case BASE:
+        case ENEMY_BASE:
+        case SENTRY:
+        case GREENENTRY:
+        case PURPLEENTRY:
+           RCLCPP_ERROR(this->get_logger(), "more than one object detected,type:%d",type);
+            break;
+        case ENEMY:
+            double min_dist = 1000.0;
+            for( size_t i = 0; i < contours.size(); i++ ){
+                if (radius[i]>3 &&
+                    IS_FAR_FROM_ENEMY_BASE(centers[i])&&
+                    IS_OUT_RANGE(cenrters[i])&&
+                    DISTANCE(centers[i],mapInfo[SENTRY].pos)<min_dist)
+                {
+                    min_dist = DISTANCE(centers[i],mapInfo[SENTRY].pos);
+                    MapInfo[type].pos.x = centers[i].x/40;
+                    MapInfo[type].pos.y = 12.8-centers[i].y/40;
+                    MapInfo[type].is_exist_and_out_range = true;
+                }
+                else{
+                    MapInfo[type].is_exist_and_out_range = false;
+                }
+            }
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+bool imgProcess::is_line_not_cross_obstacle(const cv::Mat& image, cv::Point2f pt1, cv::Point2f pt2) {
+    // 获取线段的长度
+    int dx = pt2.x - pt1.x;
+    int dy = pt2.y - pt1.y;
+    int steps = std::max(abs(dx), abs(dy));
+
+    // 计算步长
+    float xIncrement = static_cast<float>(dx) / steps;
+    float yIncrement = static_cast<float>(dy) / steps;
+
+    // 遍历线段上的每个像素
+    for (int i = 0; i <= steps; ++i) {
+        int x = static_cast<int>(pt1.x + i * xIncrement);
+        int y = static_cast<int>(pt1.y + i * yIncrement);
+
+        // 检查像素是否在图像范围内
+        if (x >= 0 && x < image.cols && y >= 0 && y < image.rows) {
+            // 获取像素值
+            cv::Vec3b pixel = image.at<cv::Vec3b>(cv::Point(y, x));
+            // 检查像素值是否满足阈值条件
+            if (pixel[0] == wallColor[0] && pixel[1] == wallColor[1] && pixel[2] == wallColor[2]) {
+                return false
+            }
+        }
+    }
+    return true;
+}
 //构造函数
 imgProcess::imgProcess() : Node("img_process_node") {
+    RCLCPP_INFO(this->get_logger(), "img_process_node started");`
+    this->declare_parameter("B_low_threshold", 0);
+    this->declare_parameter("G_low_threshold", 0);
+    this->declare_parameter("R_low_threshold", 0);
+    this->declare_parameter("B_high_threshold", 0);
+    this->declare_parameter("G_high_threshold", 0);
+    this->declare_parameter("R_high_threshold", 0);
+
+    this->get_parameter("B_low_threshold", B_low_threshold_);
+    this->get_parameter("G_low_threshold", G_low_threshold_);
+    this->get_parameter("R_low_threshold", R_low_threshold_);
+    this->get_parameter("B_high_threshold", B_high_threshold_);
+    this->get_parameter("G_high_threshold", G_high_threshold_);
+    this->get_parameter("R_high_threshold", R_high_threshold_);
+    wallColor = img.at<cv::Vec3b>(cv::Point(img.cols-1,1));
+    RCLCPP_WARN(this->get_logger(), "*-*-*--*********wall color: %d %d %d", wallColor[0], wallColor[1], wallColor[2]);
+    mapInfo[STAR].type = STAR;
+    mapInfo[BASE].type = BASE;
+    mapInfo[ENEMY_BASE].type = ENEMY_BASE;
+    mapInfo[PURPLEENTRY].type = PURPLEENTRY;
+    mapInfo[GREENENTRY].type = GREENENTRY;
+    mapInfo[ENTRY].type = ENTRY;
+    mapInfo[SENTRY].type = SENTRY;
+    mapInfo[ENEMY].type = ENEMY;
+    MapInfo[ENEMY+1].type = ENEMY;
+    for (size_t  i = 0; i < 8; i++)
+    {
+        mapInfo[i].pos.x = 0.0;
+        mapInfo[i].pos.y = 0.0;
+        mapInfo[i].is_exist_and_out_range = false;
+    }
+    
+    color_threshold[STAR]= {0,0,0,  0,0,0};
+    color_threshold[BASE]={0,0,0,  0,0,0};
+    color_threshold[ENEMY_BASE]={0,0,0,  0,0,0};
+    color_threshold[PURPLEENTRY]={0,0,0,  0,0,0};
+    color_threshold[GREENENTRY]={0,0,0,  0,0,0};
+    color_threshold[SENTRY]={220, 150, 60,  255, 200, 100};
+    color_threshold[ENEMY]={0, 0, 200,  200, 200, 255};
     // 创建QoS配置
     rclcpp::QoS qos(rclcpp::KeepLast(1));
     qos.reliability(RMW_QOS_POLICY_RELIABILITY_RELIABLE);  // 设置可靠性策略为Reliable

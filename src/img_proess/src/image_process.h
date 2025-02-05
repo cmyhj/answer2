@@ -22,16 +22,39 @@
 #include "tf2/LinearMath/Quaternion.h"
 #include "tf2_ros/transform_broadcaster.h"
 
+enum class TargetType {
+    STAR,
+    BASE,
+    ENEMY_BASE,
+    PURPLEENTRY,
+    GREENENTRY,
+    SENTRY,
+    ENEMY
+};
+
+typedef struct 
+{
+    TargetType type;
+    bool is_exist_and_out_range;
+    geometry_msgs::msg::Point2D pos;
+}MapInfo;
 
 
 class imgProcess : public rclcpp::Node {
 private:
-    
-    nav_msgs::msg::Odometry odomAftMapped;
-    cv::Point2f robot_pos;
-    cv::Point2f enemy_pos;
+    //parameters
+    int B_low_threshold_;
+    int B_high_threshold_;
+    int G_low_threshold_;
+    int G_high_threshold_;
+    int R_low_threshold_;
+    int R_high_threshold_;
+
+    MapInfo mapInfo[7];
+    int color_threshold[7][6];
     std::string map_frame="odom";
     std::string robot_frame="base_link"; 
+    cv::Vec3b wallColor;
 
 
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscription_;    
@@ -41,12 +64,14 @@ private:
     rclcpp::Publisher<geometry_msgs::msg::Pose2D>::SharedPtr pubResultCmd;
     rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pubMapInfo;
     std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster;
-    
+    nav_msgs::msg::Odometry odomAftMapped;   
 
     template<typename T>
+    bool is_out_range(cv::Point2f pos);
     void set_posestamp(T & out);
+    void set_map_info(const cv::Mat& Image, TargetType type);
 
-    void publish_map(const cv::Mat resizedImage,const cv::Vec3b wallColor);
+    void publish_map(const cv::Mat Image,const cv::Vec3b wallColor);
     void publish_map_info();
     void publish_sentry_odom(const rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pubOdomAftMapped, 
         std::unique_ptr<tf2_ros::TransformBroadcaster> & tf_br);

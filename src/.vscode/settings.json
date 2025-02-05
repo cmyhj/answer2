@@ -74,7 +74,25 @@
         "codecvt": "cpp",
         "future": "cpp",
         "cfenv": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "format": "cpp",
+        "xiosbase": "cpp",
+        "xutility": "cpp",
+        "charconv": "cpp",
+        "ios": "cpp",
+        "locale": "cpp",
+        "xlocbuf": "cpp",
+        "xlocmes": "cpp",
+        "xlocmon": "cpp",
+        "xlocnum": "cpp",
+        "xloctime": "cpp",
+        "xmemory": "cpp",
+        "xstring": "cpp",
+        "xtr1common": "cpp",
+        "xfacet": "cpp",
+        "xlocale": "cpp",
+        "xlocinfo": "cpp",
+        "xtree": "cpp"
     },
     "cmake.sourceDirectory": "/home/cmyhj/Documents/homework-2025-v1.1/release/src/small_sentry/src/img_proess"
 }
