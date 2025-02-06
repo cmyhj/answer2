@@ -66,6 +66,7 @@ protected:
   double target_xy_tolerance_;
   double lookahead_dist_;
   double max_angular_vel_;
+  int stick_cout=0;
   rclcpp::Duration transform_tolerance_ {0, 0};
 
   nav_msgs::msg::Path global_plan_;

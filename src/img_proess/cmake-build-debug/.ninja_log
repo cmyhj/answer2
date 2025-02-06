@@ -1,7 +1,0 @@
-# ninja log v6
-4	7895	1738766021524382264	CMakeFiles/img_process_node.dir/src/image_process.cpp.o	b40ed37f5f0a546d
-7896	8497	1738766029416085279	img_process_node	f06074fbbff14a29
-4	8909	1738767253282168852	CMakeFiles/img_process_node.dir/src/image_process.cpp.o	b40ed37f5f0a546d
-8909	9530	1738767262187100885	img_process_node	f06074fbbff14a29
-5	8583	1738768186072410697	CMakeFiles/img_process_node.dir/src/image_process.cpp.o	b40ed37f5f0a546d
-8583	9206	1738768194649751162	img_process_node	f06074fbbff14a29

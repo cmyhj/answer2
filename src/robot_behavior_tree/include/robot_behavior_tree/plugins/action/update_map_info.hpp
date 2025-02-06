@@ -37,22 +37,24 @@ namespace nav2_behavior_tree
         static BT::PortsList providedPorts()
         {
             return {
-                BT::OutputPort<double>("star_pose_x", "Star position x"),
-                BT::OutputPort<double>("star_pose_y", "Star position y"),
                 BT::OutputPort<double>("base_pose_x", "Base position x"),
                 BT::OutputPort<double>("base_pose_y", "Base position y"),
                 BT::OutputPort<double>("enemy_base_pose_x", "Enemy base position x"),
                 BT::OutputPort<double>("enemy_base_pose_y", "Enemy base position y"),
+                BT::OutputPort<int>("enemy_num", "Number of enemies"),
+                BT::OutputPort<double>("enemy_pose_x", "Enemy position x"),
+                BT::OutputPort<double>("enemy_pose_y", "Enemy position y"),
                 BT::OutputPort<double>("purple_entry_pose_x", "Purple entry position x"),
                 BT::OutputPort<double>("purple_entry_pose_y", "Purple entry position y"),
                 BT::OutputPort<double>("green_entry_pose_x", "Green entry position x"),
                 BT::OutputPort<double>("green_entry_pose_y", "Green entry position y"),
+                BT::OutputPort<double>("sentry_HP", "Sentry health points"),
+                BT::OutputPort<double>("star_pose_x", "Star position x"),
+                BT::OutputPort<double>("star_pose_y", "Star position y"),
                 BT::OutputPort<double>("sentry_pose_x", "Sentry position x"),
                 BT::OutputPort<double>("sentry_pose_y", "Sentry position y"),
-                BT::OutputPort<double>("enemy_pose_x", "Enemy position x"),
-                BT::OutputPort<double>("enemy_pose_y", "Enemy position y"),
-                BT::OutputPort<int>("enemy_num", "Number of enemies"),
-                BT::OutputPort<double>("sentry_HP", "Sentry health points"),
+                
+
                 BT::OutputPort<bool>("is_transfering", "is sentry transfering?"),
                 BT::OutputPort<bool>("is_star_exist", "is star exist?"),
                 BT::OutputPort<bool>("is_base_exist", "is base exist?"),
@@ -60,7 +62,8 @@ namespace nav2_behavior_tree
                 BT::OutputPort<bool>("is_purple_entry_out_of_range", "is purple entry out of range?"),
                 BT::OutputPort<bool>("is_green_entry_out_of_range", "is green entry out of range?"),
                 BT::OutputPort<bool>("is_sentry_out_of_range", "is sentry out of range?"),
-                BT::OutputPort<bool>("is_enemy_out_of_range", "is enemy out of range?")
+                BT::OutputPort<bool>("is_enemy_out_of_range", "is enemy out of range?"),
+                BT::OutputPort<bool>("is_bullet_low", "is bullet low?"),
             };
         }
 

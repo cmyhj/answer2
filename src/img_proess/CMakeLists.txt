@@ -9,9 +9,6 @@ endif()
 find_package(ament_cmake_auto REQUIRED)
 ament_auto_find_build_dependencies()
 
-# find dependencies
-find_package(ament_cmake_auto REQUIRED)
-ament_auto_find_build_dependencies()
 
 find_package(example_interfaces REQUIRED)
 find_package(robot_msgs REQUIRED)

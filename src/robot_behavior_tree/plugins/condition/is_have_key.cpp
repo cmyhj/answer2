@@ -10,20 +10,73 @@ namespace nav2_behavior_tree
         const BT::NodeConfiguration &conf)
         : BT::ConditionNode(condition_name, conf)
     {
-        enemy_num= config().blackboard->get<int>("enemy_num");
+        enemy_num = config().blackboard->get<int>("enemy_num");
+        key_num_ = 0;
+        fullKey = 0;
+        game_over = (config().blackboard->get<double>("sentry_HP") == 0.0 ? true : false);
+        key.segment_key_1 = 0;
+        key.segment_key_2 = 0;
+        node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+        callback_group_ = node_->create_callback_group(rclcpp::CallbackGroupType::MutuallyExclusive, false);
+        callback_group_executor_.add_callback_group(callback_group_, node_->get_node_base_interface());
+        rclcpp::SubscriptionOptions sub_option;
+        sub_option.callback_group = callback_group_;
+        key_sub_ = node_->create_subscription<example_interfaces::msg::Int64>(
+            "/password_segment",
+            rclcpp::SystemDefaultsQoS(),
+            std::bind(&IsHaveKeyCondition::keyCallback, this, std::placeholders::_1),
+            sub_option);
+        password_sub_ = node_->create_subscription<robot_msgs::msg::SerialFullKey>(
+            "/serial/full_key_",
+            rclcpp::SystemDefaultsQoS(),
+            std::bind(&IsHaveKeyCondition::passwordCallback, this, std::placeholders::_1),
+            sub_option);
+        key_pub_ = node_->create_publisher<robot_msgs::msg::SerialSegmentKey>("/serial/segment_key_", 10);
     }
 
-    BT::NodeStatus IsHaveKeyCondition::tick(){
-        enemy_num= config().blackboard->get<int>("enemy_num");
-        if (enemy_num>0)
+    BT::NodeStatus IsHaveKeyCondition::tick()
+    {
+        callback_group_executor_.spin_some();
+        enemy_num = config().blackboard->get<int>("enemy_num");
+        game_over = (config().blackboard->get<double>("sentry_HP") == 0.0 ? true : false);
+        // std::cout << "key1" << key.segment_key_1
+        //           << "key2" << key.segment_key_2
+        //           << "password"<<fullKey<< std::endl;
+        if (enemy_num == 0)
         {
-            std::cout<<"敌人数量大于0"<<std::endl;
-            return BT::NodeStatus::FAILURE;
+            auto temp= key.segment_key_1;
+            key.segment_key_1 = key.segment_key_2;
+            key.segment_key_2 = temp;
+            key_pub_->publish(key);
         }
-        std::cout<<"敌人数量等于0"<<std::endl;
-        return BT::NodeStatus::SUCCESS;
+        if (game_over)
+        {
+            key_num_ = 0;
+        }
+        if (enemy_num == 0)
+        {
+            config().blackboard->set<int64_t>("fullKey", fullKey);
+            return BT::NodeStatus::SUCCESS;
+        }
+        return BT::NodeStatus::FAILURE;
     }
-
+    void IsHaveKeyCondition::keyCallback(const example_interfaces::msg::Int64::SharedPtr msg)
+    {
+        if (key_num_ == 0)
+        {
+            key.segment_key_1 = msg->data;
+        }
+        else if (key_num_ == 1)
+        {
+            key.segment_key_2 = msg->data;
+        }
+        key_num_++;
+    }
+    void IsHaveKeyCondition::passwordCallback(const robot_msgs::msg::SerialFullKey::SharedPtr msg)
+    {
+        fullKey = msg->full_key;
+        config().blackboard->set<int64_t>("fullKey", fullKey);
+    }
 
 } // namespace nav2_behavior_tree
 

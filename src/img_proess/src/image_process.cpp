@@ -19,12 +19,31 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
         int x = i;
         int y = 996;
         cv::Vec3b pixel = img.at<cv::Vec3b>(cv::Point(x, y));
-        if (pixel[0] == 48 && pixel[1] == 48 && pixel[2] == 48) {
+        if (pixel[0] == 131 && pixel[1] == 131 && pixel[2] == 131) {
             cout++;
         }
     }
-    sentry_HP_= 100-cout/3.8;
-
+    sentry_HP_= cout/3.8;
+    //bullet update
+    cout = 0;
+    for (int i = 2032; i <= 2047; ++i) {
+        int x = i;
+        int y = 1014;
+        cv::Vec3b pixel = img.at<cv::Vec3b>(cv::Point(x, y));
+        if (pixel[0] >= 200 && pixel[1] >=200 && pixel[2] >=200) {
+            cout++;
+        }
+        y = 1013;
+        pixel = img.at<cv::Vec3b>(cv::Point(x, y));
+        if (pixel[0] >= 200 && pixel[1] >=200 && pixel[2] >=200) {
+            cout++;
+        }
+    }
+    if (cout ==0) {
+        is_bullet_low_=true;
+    } else {
+        is_bullet_low_=false;
+    }
     //地图处理
     int newWidth = 256;  // 新的宽度
     int newHeight = 128; // 新的高度
@@ -38,15 +57,29 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
         set_map_info(findingImage,i);
     }
     //发射逻辑
-    if(enemy_num_>0 &&
-        is_line_not_cross_obstacle(findingImage,cv::Point2f(40*mapInfo[SENTRY].pos.x,-40*(mapInfo[SENTRY].pos.y-12.8)),
-                                               cv::Point2f(40*mapInfo[ENEMY].pos.x,-40*(mapInfo[ENEMY].pos.y-12.8))))
-                                               {
-                                                    example_interfaces::msg::Bool shoot;
-                                                    shoot.data = true; // 设置消息内容为 true
-                                                    // 发布消息
-                                                    pubShoot->publish(shoot);
-                                               }
+    if( (mapInfo[ENEMY_BASE].is_exist_and_out_range==true
+        &&is_line_not_cross_obstacle(findingImage,
+                                    cv::Point2f(40*mapInfo[SENTRY].pos.x,-40*(mapInfo[SENTRY].pos.y-12.8)),
+                                    cv::Point2f(40*mapInfo[ENEMY_BASE].pos.x,-40*(mapInfo[ENEMY_BASE].pos.y-12.8))
+                                    )
+        )||(enemy_num_==2
+        &&is_line_not_cross_obstacle(findingImage,
+                                    cv::Point2f(40*mapInfo[SENTRY].pos.x,-40*(mapInfo[SENTRY].pos.y-12.8)),
+                                    shoot_other_enemy_pose
+                                    )
+        )||(enemy_num_>0
+        &&is_line_not_cross_obstacle(findingImage,
+                                    cv::Point2f(40*mapInfo[SENTRY].pos.x,-40*(mapInfo[SENTRY].pos.y-12.8)),
+                                    cv::Point2f(40*mapInfo[ENEMY].pos.x,-40*(mapInfo[ENEMY].pos.y-12.8))
+                                    )//后判断这个，如果都没法发射，机器人瞄准近处的enemy
+            )
+        )
+    {
+        example_interfaces::msg::Bool shoot;
+        shoot.data = true; // 设置消息内容为 true
+        // 发布消息
+        pubShoot->publish(shoot);
+    }
     // RCLCPP_INFO(this->get_logger(), "----------------sentrypos: %f,%f",mapInfo[SENTRY].pos.x,mapInfo[SENTRY].pos.y);
 
     //test
@@ -63,14 +96,14 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
     //     approxPolyDP( test_contours[i], test_contours_poly[i], 3, true );
     //     minEnclosingCircle( test_contours_poly[i], test_centers[i], test_radius[i] );
     //     if(test_radius[i]>4){
-            //cv::circle( findingImage,cv::Point2f(40*mapInfo[ENEMY].pos.x,-40*(mapInfo[ENEMY].pos.y-12.8)),5,cv::Scalar( 0, 0, 255 ),10);
+    // cv::circle( findingImage,cv::Point2f(40*mapInfo[ENEMY_BASE].pos.x,-40*(mapInfo[ENEMY_BASE].pos.y-12.8)),5,cv::Scalar( 0, 0, 255 ),10);
         // }
     // }
     // 绘制 ENEMY_BASE 区域的框
     // cv::Point2f enemyBaseTopLeft(40*(mapInfo[ENEMY_BASE].pos.x - 1.0), -40*(mapInfo[ENEMY_BASE].pos.y - 1.0-12.8));
     // cv::Point2f enemyBaseBottomRight(40*(mapInfo[ENEMY_BASE].pos.x + 1.0), -40*(mapInfo[ENEMY_BASE].pos.y + 1.0-12.8));
-    // cv::rectangle(findingImage, enemyBaseTopLeft, enemyBaseBottomRight, cv::Scalar(0, 0, 255), 2); // 红色框
-    // cv::putText(img, "HP: " + std::to_string(sentry_HP_),cv::Point(10, 950), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 1);
+    // cv::rectangle(img, cv::Point(2032,1013), cv::Point(2047,1014), cv::Scalar(0, 0, 255), 2); // 红色框
+    // // cv::putText(img, "HP: " + std::to_string(sentry_HP_),cv::Point(10, 950), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 1);
     // cv::imshow("view", img);
     // waitKey(1);
     
@@ -80,8 +113,25 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
 }
 
 void imgProcess::cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg) {
-    cmd_vel_pose.x = msg->linear.x;
-    cmd_vel_pose.y = -msg->linear.y;
+    std::random_device rd;  // 随机数种子
+    std::mt19937 gen(rd()); // 使用 Mersenne Twister 算法生成随机数
+    std::uniform_int_distribution<> dis(0, 9); // 定义随机数范围为 0 到 9
+    // 生成随机数
+    int random_number = dis(gen);
+    if(random_number<1+9*abs(msg->linear.x))
+    {
+        cmd_vel_pose.x = msg->linear.x;    
+    }else{
+        // RCLCPP_INFO(this->get_logger(),"减速！random_number: %d,vx:%f",random_number,msg->linear.x);
+        cmd_vel_pose.x=0;
+    }
+    if(random_number<1+9*abs(msg->linear.y)){
+        cmd_vel_pose.y = -msg->linear.y;
+    }else{
+        // RCLCPP_INFO(this->get_logger(),"减速！random_number: %d,vy:%f",random_number,msg->linear.y);
+        cmd_vel_pose.y=0;
+    }
+    
 }
 
 void imgProcess::publish_map(const cv::Mat resizedImage,const cv::Vec3b wallColor){
@@ -140,6 +190,7 @@ void imgProcess::publish_map_info(){
     mapInfoMsgs.enemy_num = enemy_num_;
     mapInfoMsgs.sentry_hp = sentry_HP_;
     mapInfoMsgs.is_transfering = is_transfering_;
+    mapInfoMsgs.is_bullet_low = is_bullet_low_;
     pubMapInfo->publish(mapInfoMsgs);
 }
 template<typename T>
@@ -167,7 +218,23 @@ void imgProcess::set_map_info(const cv::Mat& Image, uint8_t type){
         mapInfo[type].is_exist_and_out_range = false;
         if (type == ENEMY){
             enemy_num_=0;
-        }   
+        }
+        if(type == ENEMY_BASE){
+            cv::inRange(Image, cv::Scalar(140,110,160), cv::Scalar(160,130,180), binaryImg);
+            findContours(binaryImg, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE );
+            vector<vector<Point> > contours_poly( contours.size() );
+            vector<float>radius( contours.size() );
+            vector<Point2f>centers( contours.size() );
+            for( size_t i = 0; i < contours.size(); i++ )
+            {
+                approxPolyDP( contours[i], contours_poly[i], 3, true );
+                minEnclosingCircle( contours_poly[i], centers[i], radius[i] );
+            }
+            if(contours.size()==1 && radius[0]>6){
+                mapInfo[ENEMY_BASE].pos.x = centers[0].x/40;
+                mapInfo[ENEMY_BASE].pos.y = 12.8-centers[0].y/40;
+            }
+        }
         return;
     }
     // 寻找最小外接圆
@@ -249,12 +316,17 @@ void imgProcess::set_map_info(const cv::Mat& Image, uint8_t type){
                     isFarFromEnemyBase(centers[i]))
                 {
                     enemy_num_+=1;
+                    if(enemy_num_==1){
+                        shoot_other_enemy_pose=centers[i];
+                    }
                     if(distance(centers[i],mapInfo[SENTRY].pos)-isOutOfRange(centers[i])*1000<min_dist)
                     {
                         mapInfo[type].pos.x = centers[i].x/40;
                         mapInfo[type].pos.y = 12.8-centers[i].y/40;
                         mapInfo[type].is_exist_and_out_range = isOutOfRange(centers[i]);
                         min_dist = distance(centers[i],mapInfo[SENTRY].pos)-mapInfo[type].is_exist_and_out_range*1000;
+                    }else{
+                        shoot_other_enemy_pose=centers[i];
                     }
                 }
             }
@@ -290,7 +362,7 @@ bool imgProcess::is_line_not_cross_obstacle( cv::Mat& image, cv::Point2f pt1, cv
             }
         }
     }
-    RCLCPP_ERROR(this->get_logger(), "can shoot!!!!!!!!!!!");
+    // RCLCPP_ERROR(this->get_logger(), "can shoot!!!!!!!!!!!");
     return true;
 }
 //构造函数
@@ -321,12 +393,14 @@ imgProcess::imgProcess() : Node("img_process_node") {
     }
     wallColor={58,58,58};
     enemy_num_=0;
+    shoot_other_enemy_pose.x=0;
+    shoot_other_enemy_pose.y=0;
     cmd_vel_pose.x=0;
     cmd_vel_pose.y=0;
     cmd_vel_pose.theta=0;
     color_threshold[STAR]= {210,110,100,  250,130,130};
     color_threshold[BASE]={80,50,10,  100,70,30};
-    color_threshold[ENEMY_BASE]={140,110,160,  160,130,180};
+    color_threshold[ENEMY_BASE]={70,70,140,  80,80,150};
     color_threshold[PURPLEENTRY]={200,90,180,  240,110,220};
     color_threshold[GREENENTRY]={110,180,0,  130,250,70};
     color_threshold[SENTRY]={220, 150, 70,  255, 200, 100};

@@ -16,12 +16,16 @@ namespace nav2_behavior_tree
     BT::NodeStatus IfHPOrBulletLowCondition::tick()
     {
         sentry_HP_= config().blackboard->get<double>("sentry_HP");
-        if (sentry_HP_<95)
+        HP_threshold_ = config().blackboard->get<double>("health_threshold");
+        if (sentry_HP_<HP_threshold_)
         {
-            std::cout<<"HP小于95"<<std::endl;
+            std::cout<<"HP小于"<<HP_threshold_<<std::endl;
             return BT::NodeStatus::SUCCESS;
         }
-        std::cout<<"HP大于95"<<std::endl;
+        else if (config().blackboard->get<bool>("is_bullet_low")==true){
+            std::cout<<"子弹小于10"<<std::endl;
+            return BT::NodeStatus::SUCCESS;
+        }
         return BT::NodeStatus::FAILURE;
     }
 

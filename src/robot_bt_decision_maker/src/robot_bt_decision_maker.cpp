@@ -58,7 +58,7 @@ public:
         blackboard_->set<std::chrono::milliseconds>("server_timeout", server_timeout_);     // NOLINT
         blackboard_->set<std::chrono::milliseconds>("bt_loop_duration", bt_loop_duration_); // NOLINT
         blackboard_->set<std::shared_ptr<tf2_ros::Buffer>>("tf_buffer", tfbuffer_);         // NOLINT
-        blackboard_->set<double>("health_threshold",95.0);
+        blackboard_->set<double>("health_threshold", 95.0);
         blackboard_->set<double>("star_pose_x", 0.0);
         blackboard_->set<double>("star_pose_y", 0.0);
         blackboard_->set<double>("base_pose_x", 0.0);
@@ -76,6 +76,15 @@ public:
         blackboard_->set<int>("enemy_num", 0);
         blackboard_->set<double>("sentry_HP", 0.0);
         blackboard_->set<bool>("is_transfering", false);
+        blackboard_->set<bool>("is_star_exist", false);
+        blackboard_->set<bool>("is_base_exist", false);
+        blackboard_->set<bool>("is_enemy_base_exist", false);
+        blackboard_->set<bool>("is_purple_entry_out_of_range", false);
+        blackboard_->set<bool>("is_green_entry_out_of_range", false);
+        blackboard_->set<bool>("is_sentry_out_of_range", false);
+        blackboard_->set<bool>("is_enemy_out_of_range", false);
+        blackboard_->set<bool>("is_bullet_low", false);
+        blackboard_->set<int64_t>("fullKey",0);
         // blackboard_->set<int>("health_threshold",80);
         if (!loadBehaviorTree(bt_xml_filename_, blackboard_))
         {
@@ -94,7 +103,7 @@ public:
         };
         auto on_loop = [this]() -> void
         {
-            RCLCPP_INFO(this->get_logger(), "行为树正在运行...");
+            // RCLCPP_INFO(this->get_logger(), "行为树正在运行...");
             rclcpp::spin_some(this->get_node_base_interface());
         };
         // Run the Behavior Tree
@@ -156,7 +165,7 @@ private:
                 blackboard->set<std::chrono::milliseconds>("bt_loop_duration", bt_loop_duration_); // NOLINT
                 blackboard->set<std::shared_ptr<tf2_ros::Buffer>>("tf_buffer", tfbuffer_);         // NOLINT
                 // blackboard->set<bool>("is_we_are_blue", is_we_are_blue_);
-                blackboard->set<double>("health_threshold",95.0);
+                blackboard->set<double>("health_threshold", 95.0);
                 blackboard->set<double>("star_pose_x", 0.0);
                 blackboard->set<double>("star_pose_y", 0.0);
                 blackboard->set<double>("base_pose_x", 0.0);
@@ -174,6 +183,15 @@ private:
                 blackboard->set<int>("enemy_num", 0);
                 blackboard->set<double>("sentry_HP", 0.0);
                 blackboard->set<bool>("is_transfering", false);
+                blackboard->set<bool>("is_star_exist", false);
+                blackboard->set<bool>("is_base_exist", false);
+                blackboard->set<bool>("is_enemy_base_exist", false);
+                blackboard->set<bool>("is_purple_entry_out_of_range", false);
+                blackboard->set<bool>("is_green_entry_out_of_range", false);
+                blackboard->set<bool>("is_sentry_out_of_range", false);
+                blackboard->set<bool>("is_enemy_out_of_range", false);
+                blackboard->set<bool>("is_bullet_low", false);
+                blackboard->set<int64_t>("fullKey",0);
             }
         }
         catch (const std::exception &e)

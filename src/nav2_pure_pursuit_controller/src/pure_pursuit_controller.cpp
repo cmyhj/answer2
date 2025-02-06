@@ -15,6 +15,7 @@
 #include "nav2_pure_pursuit_controller/pure_pursuit_controller.hpp"
 #include "nav2_util/geometry_utils.hpp"
 
+
 using std::hypot;
 using std::min;
 using std::max;
@@ -127,9 +128,35 @@ geometry_msgs::msg::TwistStamped PurePursuitController::computeVelocityCommands(
 {
   (void)velocity;
   (void)goal_checker;
+  node_.lock()->get_parameter(plugin_name_ + ".lookahead_dist", lookahead_dist_);
+  node_.lock()->get_parameter(plugin_name_ + ".desired_linear_vel", desired_linear_vel_);
 
   auto transformed_plan = transformGlobalPlan(pose);
 
+  //防止隔墙的bug
+  if (!global_plan_.poses.empty()) 
+  {
+    double start_distance = hypot(
+      global_plan_.poses[0].pose.position.x-pose.pose.position.x,
+      global_plan_.poses[0].pose.position.y-pose.pose.position.y);
+    if(start_distance<0.07){
+      stick_cout++;
+      if (stick_cout>25){
+        stick_cout=25;
+      }
+    }
+    else{
+      stick_cout--;
+      if (stick_cout<0){
+        stick_cout=0;
+      }
+    }
+    if(stick_cout>15)
+      {
+        lookahead_dist_-=0.5;
+        desired_linear_vel_-=0.5;
+      }
+  }
   // Find the first pose which is at a distance greater than the specified lookahed distance
   auto goal_pose_it = std::find_if(
     transformed_plan.poses.begin(), transformed_plan.poses.end(), [&](const auto & ps) {
@@ -142,32 +169,6 @@ geometry_msgs::msg::TwistStamped PurePursuitController::computeVelocityCommands(
     goal_pose_it = std::prev(transformed_plan.poses.end());
   }
   auto goal_pose = goal_pose_it->pose;
-
-  
-
-  // If the goal pose is in front of the robot then compute the velocity using the pure pursuit
-  // algorithm, else rotate with the max angular velocity until the goal pose is in front of the
-  // robot
-  // if (goal_pose.position.x > 0) {
-  //   auto curvature = 2.0 * goal_pose.position.y /
-  //     (goal_pose.position.x * goal_pose.position.x + goal_pose.position.y * goal_pose.position.y);
-  //   linear_vel = desired_linear_vel_;
-  //   angular_vel = desired_linear_vel_ * curvature;
-  // } else {
-  //   linear_vel = 0.0;
-  //   angular_vel = max_angular_vel_;
-  // }
-
-  // Create and publish a TwistStamped message with the desired velocity
-  // geometry_msgs::msg::TwistStamped cmd_vel;
-  // cmd_vel.header.frame_id = pose.header.frame_id;
-  // cmd_vel.header.stamp = clock_->now();
-  // cmd_vel.twist.linear.x = linear_vel;
-  // cmd_vel.twist.angular.z = max(
-  //   -1.0 * abs(max_angular_vel_), min(
-  //     angular_vel, abs(
-  //       max_angular_vel_)));
-
   if (goal_pose.position.x > target_xy_tolerance_) {
     linear_vel_x = desired_linear_vel_;
   } else if(goal_pose.position.x < -target_xy_tolerance_){
@@ -183,6 +184,22 @@ geometry_msgs::msg::TwistStamped PurePursuitController::computeVelocityCommands(
     linear_vel_y = 0.0;
   }
   
+  auto last_pose_it = std::prev(transformed_plan.poses.end());
+  auto last_pose = last_pose_it->pose;
+
+  double distance = hypot(
+    last_pose.position.x,
+    last_pose.position.y
+  );
+
+  if (distance <= 1 ) {//邻近距离减速
+    // RCLCPP_ERROR(
+    //     rclcpp::get_logger("tf_help"),
+    //     "快到目的了%f",distance
+    //   );
+    linear_vel_x = linear_vel_x*(1-distance);
+    linear_vel_y = linear_vel_y*(1-distance);
+  }
   // RCLCPP_WARN(logger_, "goalpose:x=%f y=%f",goal_pose.position.x,goal_pose.position.y);
   // Create and publish a TwistStamped message with the desired velocity
   geometry_msgs::msg::TwistStamped cmd_vel;

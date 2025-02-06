@@ -45,7 +45,7 @@ namespace nav2_behavior_tree
         }
         goal_pose.header.stamp = node_->now();
         goal_pub_->publish(goal_pose);
-        std::cout<<"回基地补给"<<std::endl;
+        std::cout<<"冲对面家！"<<std::endl;
         return BT::NodeStatus::SUCCESS;
     }
 } // namespace nav2_behavior_tree

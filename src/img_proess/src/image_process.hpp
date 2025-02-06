@@ -5,6 +5,7 @@
 #include <thread>
 #include <cmath>
 #include <array>
+#include <random>
 
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/point32.hpp>
@@ -57,6 +58,7 @@ private:
 
     std::vector<robot_msgs::msg::MapInfo> mapInfo;
     bool is_transfering_ = false;
+    bool is_bullet_low_=false;
     std::array<std::array<int, 6>, 7> color_threshold = {};
     std::string map_frame="odom";
     std::string robot_frame="base_link"; 
@@ -64,6 +66,7 @@ private:
     int enemy_num_;
     double sentry_HP_;
     geometry_msgs::msg::Pose2D cmd_vel_pose;
+    cv::Point2f shoot_other_enemy_pose;
 
 
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscription_;    
@@ -91,10 +94,10 @@ private:
 
     // 内联函数：检查是否超出范围
     inline bool isOutOfRange(const cv::Point2f& pose) {
-        return pose.x <= mapInfo[STAR].pos.x - 2.0 ||
-            pose.x >= mapInfo[STAR].pos.x + 2.0 ||
-            pose.y <= mapInfo[STAR].pos.y - 1.0 ||
-            pose.y >= mapInfo[STAR].pos.y + 1.0;
+        return pose.x/40 <= mapInfo[STAR].pos.x - 2.0 ||
+            pose.x/40 >= mapInfo[STAR].pos.x + 2.0 ||
+            (12.8-pose.y/40) <= mapInfo[STAR].pos.y - 1.0 ||
+            (12.8-pose.y/40) >= mapInfo[STAR].pos.y + 1.0;
     }
 
     // 内联函数：检查是否远离敌方基地

@@ -65,6 +65,7 @@ namespace nav2_behavior_tree
         config().blackboard->set<bool>("is_green_entry_out_of_range", msg->map_info[GREENENTRY].is_exist_and_out_range);
         config().blackboard->set<bool>("is_sentry_out_of_range", msg->map_info[SENTRY].is_exist_and_out_range);
         config().blackboard->set<bool>("is_enemy_out_of_range", msg->map_info[ENEMY].is_exist_and_out_range);
+        config().blackboard->set<bool>("is_bullet_low", msg->is_bullet_low);
     }
 } // namespace nav2_behavior_tree
 

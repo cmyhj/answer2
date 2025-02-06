@@ -1,0 +1,122 @@
+<root>
+    <TreeNodesModel>
+        <Action ID="BuyBlood"/>
+        <Action ID="BuyBullet"/>
+        <Action ID="BuyBulletInRecovery">
+            <input_port name="number_of_bullet"/>
+        </Action>
+        <Condition ID="ForceMove">
+            <input_port default="1.0" name="force_move_time"/>
+        </Condition>
+        <Condition ID="GoalReached">
+            <input_port name="global_frame">Reference frame</input_port>
+            <input_port name="goal">Destination</input_port>
+            <input_port name="robot_base_frame">Robot base frame</input_port>
+        </Condition>
+        <Condition ID="GoalUpdated"/>
+        <Decorator ID="GoalUpdater">
+            <input_port name="input_goal">Original goal in</input_port>
+            <output_port name="output_goal">Output goal set by subscription</output_port>
+        </Decorator>
+        <Condition ID="IfAllowanceShootLessThanInput">
+            <input_port name="shoot_threshold">shoot threshold for low shoot condition</input_port>
+        </Condition>
+        <Condition ID="IfAppointRobotBloodLessThanInput">
+            <input_port name="Health_threshold"/>
+            <input_port name="RobotName"/>
+            <input_port name="is_our"/>
+        </Condition>
+        <Condition ID="IfBaseShieldLessThanInput">
+            <input_port name="shield_threshold">Shield threshold for low health condition</input_port>
+        </Condition>
+        <Condition ID="IfCancelResurrection"/>
+        <Condition ID="IfCoinMoreThanInput">
+            <input_port name="coin_threshold">coin threshold for low coin condition</input_port>
+        </Condition>
+        <Condition ID="IfHealthLessThanInput">
+            <input_port name="health_threshold">Health remaining</input_port>
+        </Condition>
+        <Condition ID="IfHealthMoreThanInput">
+            <input_port name="health_threshold">Health max</input_port>
+        </Condition>
+        <Condition ID="IfInCommand"/>
+        <Condition ID="IfInRamp">
+            <input_port name="global_frame"/>
+            <input_port name="robot_base_frame"/>
+        </Condition>
+        <Condition ID="IfOutpostHpLessThanInput">
+            <input_port name="health_threshold">Health threshold for low health condition</input_port>
+        </Condition>
+        <Condition ID="IfRemainTimeInInput">
+            <input_port name="high_time"/>
+            <input_port name="low_time"/>
+        </Condition>
+        <Condition ID="IsGoalUpdate">
+            <input_port default="{goal}" name="goal"/>
+        </Condition>
+        <Condition ID="IsOutFight"/>
+        <Condition ID="IsReceiveMapCommandPose">
+            <input_port default="{goal}" name="goal"/>
+        </Condition>
+        <Condition ID="IsRfidInPatrol"/>
+        <Condition ID="IsRfidInRecovery"/>
+        <Condition ID="IsSentryHurt"/>
+        <Action ID="NavigateToPose">
+            <input_port default="{goal}" name="goal">Goal</input_port>
+        </Action>
+        <Action ID="Printf">
+            <input_port name="txt"/>
+        </Action>
+        <Action ID="RandomMove">
+            <input_port name="random_position_x_1"/>
+            <input_port name="random_position_x_2"/>
+            <input_port name="random_position_x_3"/>
+            <input_port name="random_position_x_4"/>
+            <input_port name="random_position_y_1"/>
+            <input_port name="random_position_y_2"/>
+            <input_port name="random_position_y_3"/>
+            <input_port name="random_position_y_4"/>
+            <output_port default="{goal}" name="randomgoal"/>
+            <input_port default="1.0" name="select_time"/>
+        </Action>
+        <Condition ID="RecordRobotBlood"/>
+        <Condition ID="RecordSentryStatus"/>
+        <Action ID="SelectResurrection">
+            <input_port name="type_of_resurrection"/>
+        </Action>
+        <Action ID="SendDecision"/>
+        <Action ID="SendPatrol"/>
+        <Action ID="SendSentryInfo"/>
+        <Action ID="SendWhiteList"/>
+        <Action ID="SetPatrol">
+            <input_port name="max_pitch"/>
+            <input_port name="max_yaw"/>
+            <input_port name="min_pitch"/>
+            <input_port name="min_yaw"/>
+            <input_port name="mode"/>
+            <input_port name="spin"/>
+        </Action>
+        <Action ID="SetSentryInfo">
+            <input_port name="info"/>
+        </Action>
+        <Action ID="SetWhiteList">
+            <input_port name="base"/>
+            <input_port name="engineer"/>
+            <input_port name="hero"/>
+            <input_port name="infantry3"/>
+            <input_port name="infantry4"/>
+            <input_port name="infantry5"/>
+            <input_port name="outpost"/>
+            <input_port name="sentry"/>
+        </Action>
+        <Action ID="UpdateGoal">
+            <output_port default="{goal}" name="goal"/>
+            <input_port name="position_x"/>
+            <input_port name="position_y"/>
+        </Action>
+        <Decorator ID="UserForceFailure"/>
+        <Decorator ID="UserForceSuccess"/>
+        <Condition ID="WaitForGameStart"/>
+    </TreeNodesModel>
+</root>
+

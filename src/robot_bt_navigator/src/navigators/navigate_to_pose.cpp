@@ -113,7 +113,7 @@ NavigateToPoseNavigator::onLoop()
   // action server feedback (pose, duration of task,
   // number of recoveries, and distance remaining to goal)
   auto feedback_msg = std::make_shared<ActionT::Feedback>();
-
+  RCLCPP_WARN(logger_, "NavigateToPoseNavigator::onLoop");
   geometry_msgs::msg::PoseStamped current_pose;
   nav2_util::getCurrentPose(
     current_pose, *feedback_utils_.tf,

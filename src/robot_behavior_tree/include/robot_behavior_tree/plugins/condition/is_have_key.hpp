@@ -7,6 +7,9 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "behaviortree_cpp_v3/condition_node.h"
+#include <example_interfaces/msg/int64.hpp>
+#include "robot_msgs/msg/serial_full_key.hpp"
+#include "robot_msgs/msg/serial_segment_key.hpp"
 
 namespace nav2_behavior_tree
 {
@@ -38,13 +41,25 @@ namespace nav2_behavior_tree
         {
             return {
                 BT::InputPort<int>("enemy_num", "Number of enemies"),
+                BT::InputPort<double>("sentry_HP", "sentry_HP"),
+                BT::OutputPort<int64_t>("fullKey", "fullKey"),
             };
         }
 
     private:
-        int key1;
-        int key2;
+        bool game_over;
+        robot_msgs::msg::SerialSegmentKey key;
+        int64_t fullKey;
+        int key_num_;
         int enemy_num;
+        void keyCallback(const example_interfaces::msg::Int64::SharedPtr msg);
+        void passwordCallback(const robot_msgs::msg::SerialFullKey::SharedPtr msg);
+        rclcpp::Node::SharedPtr node_;
+        rclcpp::CallbackGroup::SharedPtr callback_group_;
+        rclcpp::executors::SingleThreadedExecutor callback_group_executor_;
+        rclcpp::Subscription<example_interfaces::msg::Int64>::SharedPtr key_sub_;
+        rclcpp::Subscription<robot_msgs::msg::SerialFullKey>::SharedPtr password_sub_;
+        rclcpp::Publisher<robot_msgs::msg::SerialSegmentKey>::SharedPtr key_pub_;
     };
 
 } // namespace nav2_behavior_tree

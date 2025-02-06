@@ -38,11 +38,13 @@ namespace nav2_behavior_tree
         {
             return {
                 BT::InputPort<double>("sentry_HP", "Sentry health points"),
+                BT::InputPort<bool>("is_bullet_low", "is_bullet_low"),
             };
         }
 
     private:
         double sentry_HP_;
+        double HP_threshold_;
         bool is_HP_low_;
     };
 

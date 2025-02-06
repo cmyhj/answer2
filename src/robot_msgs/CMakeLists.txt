@@ -18,6 +18,8 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/MapInfo.msg"
   "msg/MapInfoMsgs.msg"
+  "msg/SerialFullKey.msg"
+  "msg/SerialSegmentKey.msg"
   DEPENDENCIES geometry_msgs std_msgs
 )
 if(BUILD_TESTING)

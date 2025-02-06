@@ -13,6 +13,12 @@ find_package(behaviortree_cpp_v3 REQUIRED)
 find_package(robot_msgs REQUIRED)
 # find_package(robot_serial REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(example_interfaces REQUIRED)
+
+# find dependencies
+find_package(ament_cmake_auto REQUIRED)
+ament_auto_find_build_dependencies()
+
 
 include_directories(
   include
@@ -24,6 +30,7 @@ set(dependencies
   robot_msgs
   # robot_serial
   geometry_msgs
+  example_interfaces
 )
 
 add_library(aim_enemy_action_bt_node SHARED plugins/action/aim_enemy.cpp)
@@ -43,6 +50,18 @@ list(APPEND plugin_libs update_map_info_action_bt_node)
 
 add_library(if_HP_or_bullet_low_condition_bt_node SHARED plugins/condition/if_HP_or_bullet_low.cpp)
 list(APPEND plugin_libs if_HP_or_bullet_low_condition_bt_node)
+
+add_library(is_have_key_condition_bt_node SHARED plugins/condition/is_have_key.cpp)
+list(APPEND plugin_libs is_have_key_condition_bt_node)
+
+add_library(if_is_transfering_condition_bt_node SHARED plugins/condition/if_is_transfering.cpp)
+list(APPEND plugin_libs if_is_transfering_condition_bt_node)
+
+add_library(if_game_start_condition_bt_node SHARED plugins/condition/if_game_start.cpp)
+list(APPEND plugin_libs if_game_start_condition_bt_node)
+
+add_library(if_shield_open_condition_bt_node SHARED plugins/condition/if_shield_open.cpp)
+list(APPEND plugin_libs if_shield_open_condition_bt_node)
 
 
 foreach(bt_plugin ${plugin_libs})

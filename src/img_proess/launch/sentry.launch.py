@@ -18,8 +18,8 @@ def generate_launch_description():
     if_sim = False
 
     robot_bringup_path = get_package_share_directory("img_process")
-    yaml_path = os.path.join(robot_bringup_path, "config", "nav2_params.yaml")
-    img_process_path = get_package_share_directory("img_process")
+    robot_bt_decision_maker_path = get_package_share_directory("robot_bt_decision_maker")
+    yaml_path = os.path.join(robot_bringup_path, "config", "params.yaml")
 
     param_yaml_path = LaunchConfiguration("params_file", default=yaml_path)
     declare_yaml_path = DeclareLaunchArgument(
@@ -61,6 +61,15 @@ def generate_launch_description():
         executable="img_process_node",
         name="img_process_node",
         output="screen",
+        parameters=[param_yaml_path],
+    )
+    robot_serial_node = Node(
+        package="robot_serial",
+        executable="robot_serial",
+        output="screen",
+        name="robot_serial_node",
+        parameters=[param_yaml_path],
+        respawn=True # 重启
     )
     navigation_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -70,6 +79,11 @@ def generate_launch_description():
             "params_file": param_yaml_path,
             "use_sim_time": param_launch_gazebo,
         }.items(),
+    )
+    bt_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [robot_bt_decision_maker_path, "/launch", "/robot_bt_decision_maker.launch.py"]
+        ),
     )
     tf_node = Node(
         package='tf2_ros',
@@ -92,9 +106,11 @@ def generate_launch_description():
             declare_yaml_path, 
             declare_launch_rviz, 
             declare_rviz_config_dir, 
-            img_process_node,
             tf_node,
+            bt_launch,
+            img_process_node,
             navigation_launch,
+            robot_serial_node,
             rviz_node
             ]
 
