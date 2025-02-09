@@ -289,7 +289,7 @@ void imgProcess::set_map_info(const cv::Mat& Image, uint8_t type){
         case BASE:
         case ENEMY_BASE:
         case SENTRY:
-            RCLCPP_WARN(this->get_logger(), "more than one object detected,type:%d",type);
+            // RCLCPP_WARN(this->get_logger(), "more than one object detected,type:%d",type);
             break;
         case GREENENTRY:
         case PURPLEENTRY:

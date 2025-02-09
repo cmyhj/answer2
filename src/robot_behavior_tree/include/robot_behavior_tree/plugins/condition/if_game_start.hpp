@@ -38,6 +38,7 @@ namespace nav2_behavior_tree
         {
             return {
                 BT::InputPort<double>("sentry_HP", "sentry HP"),
+                BT::OutputPort<int>("key_num_", "key_num_"),
             };
         }
     };

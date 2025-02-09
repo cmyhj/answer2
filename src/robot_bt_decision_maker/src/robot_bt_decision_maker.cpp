@@ -58,7 +58,7 @@ public:
         blackboard_->set<std::chrono::milliseconds>("server_timeout", server_timeout_);     // NOLINT
         blackboard_->set<std::chrono::milliseconds>("bt_loop_duration", bt_loop_duration_); // NOLINT
         blackboard_->set<std::shared_ptr<tf2_ros::Buffer>>("tf_buffer", tfbuffer_);         // NOLINT
-        blackboard_->set<double>("health_threshold", 95.0);
+
         blackboard_->set<double>("star_pose_x", 0.0);
         blackboard_->set<double>("star_pose_y", 0.0);
         blackboard_->set<double>("base_pose_x", 0.0);
@@ -84,6 +84,9 @@ public:
         blackboard_->set<bool>("is_sentry_out_of_range", false);
         blackboard_->set<bool>("is_enemy_out_of_range", false);
         blackboard_->set<bool>("is_bullet_low", false);
+
+        blackboard_->set<int>("key_num_", 0);
+        blackboard_->set<double>("health_threshold", 95.0);
         blackboard_->set<int64_t>("fullKey",0);
         // blackboard_->set<int>("health_threshold",80);
         if (!loadBehaviorTree(bt_xml_filename_, blackboard_))
@@ -165,7 +168,6 @@ private:
                 blackboard->set<std::chrono::milliseconds>("bt_loop_duration", bt_loop_duration_); // NOLINT
                 blackboard->set<std::shared_ptr<tf2_ros::Buffer>>("tf_buffer", tfbuffer_);         // NOLINT
                 // blackboard->set<bool>("is_we_are_blue", is_we_are_blue_);
-                blackboard->set<double>("health_threshold", 95.0);
                 blackboard->set<double>("star_pose_x", 0.0);
                 blackboard->set<double>("star_pose_y", 0.0);
                 blackboard->set<double>("base_pose_x", 0.0);
@@ -191,6 +193,9 @@ private:
                 blackboard->set<bool>("is_sentry_out_of_range", false);
                 blackboard->set<bool>("is_enemy_out_of_range", false);
                 blackboard->set<bool>("is_bullet_low", false);
+
+                blackboard->set<double>("health_threshold", 95.0);
+                blackboard->set<int>("key_num_", 0);
                 blackboard->set<int64_t>("fullKey",0);
             }
         }

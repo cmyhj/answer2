@@ -41,13 +41,14 @@ namespace nav2_behavior_tree
         {
             return {
                 BT::InputPort<int>("enemy_num", "Number of enemies"),
-                BT::InputPort<double>("sentry_HP", "sentry_HP"),
+                BT::InputPort<int>("key_num_", "key_num_"),
+                BT::OutputPort<int>("key_num_", "key_num_"),
                 BT::OutputPort<int64_t>("fullKey", "fullKey"),
             };
         }
 
     private:
-        bool game_over;
+        bool key_used;
         robot_msgs::msg::SerialSegmentKey key;
         int64_t fullKey;
         int key_num_;

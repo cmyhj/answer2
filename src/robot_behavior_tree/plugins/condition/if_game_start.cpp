@@ -16,6 +16,7 @@ namespace nav2_behavior_tree
         if(config().blackboard->get<double>("sentry_HP")==0)
         {
             std::cout<<"等待游戏开始"<<std::endl;
+            config().blackboard->set<int>("key_num_",0);
             return BT::NodeStatus::FAILURE;
         }
         return BT::NodeStatus::SUCCESS;

@@ -176,7 +176,7 @@ NavigateThroughPosesNavigator::onLoop()
 void
 NavigateThroughPosesNavigator::onPreempt(ActionT::Goal::ConstSharedPtr goal)
 {
-  RCLCPP_INFO(logger_, "Received goal preemption request");
+  // RCLCPP_INFO(logger_, "Received goal preemption request");
 
   if (goal->behavior_tree == bt_action_server_->getCurrentBTFilename() ||
     (goal->behavior_tree.empty() &&
@@ -201,11 +201,11 @@ NavigateThroughPosesNavigator::onPreempt(ActionT::Goal::ConstSharedPtr goal)
 void
 NavigateThroughPosesNavigator::initializeGoalPoses(ActionT::Goal::ConstSharedPtr goal)
 {
-  if (goal->poses.size() > 0) {
-    RCLCPP_INFO(
-      logger_, "Begin navigating from current location through %zu poses to (%.2f, %.2f)",
-      goal->poses.size(), goal->poses.back().pose.position.x, goal->poses.back().pose.position.y);
-  }
+  // if (goal->poses.size() > 0) {
+  //   RCLCPP_INFO(
+  //     logger_, "Begin navigating from current location through %zu poses to (%.2f, %.2f)",
+  //     goal->poses.size(), goal->poses.back().pose.position.x, goal->poses.back().pose.position.y);
+  // }
 
   // Reset state for new action feedback
   start_time_ = clock_->now();

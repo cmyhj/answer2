@@ -13,7 +13,7 @@ namespace nav2_behavior_tree
         enemy_num = config().blackboard->get<int>("enemy_num");
         key_num_ = 0;
         fullKey = 0;
-        game_over = (config().blackboard->get<double>("sentry_HP") == 0.0 ? true : false);
+        key_used = (config().blackboard->get<double>("sentry_HP") == 0.0 ? true : false);
         key.segment_key_1 = 0;
         key.segment_key_2 = 0;
         node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
@@ -36,9 +36,9 @@ namespace nav2_behavior_tree
 
     BT::NodeStatus IsHaveKeyCondition::tick()
     {
-        callback_group_executor_.spin_some();
         enemy_num = config().blackboard->get<int>("enemy_num");
-        game_over = (config().blackboard->get<double>("sentry_HP") == 0.0 ? true : false);
+        key_num_ = config().blackboard->get<int>("key_num_");
+        callback_group_executor_.spin_some();
         // std::cout << "key1" << key.segment_key_1
         //           << "key2" << key.segment_key_2
         //           << "password"<<fullKey<< std::endl;
@@ -48,13 +48,6 @@ namespace nav2_behavior_tree
             key.segment_key_1 = key.segment_key_2;
             key.segment_key_2 = temp;
             key_pub_->publish(key);
-        }
-        if (game_over)
-        {
-            key_num_ = 0;
-        }
-        if (enemy_num == 0)
-        {
             config().blackboard->set<int64_t>("fullKey", fullKey);
             return BT::NodeStatus::SUCCESS;
         }
@@ -70,7 +63,7 @@ namespace nav2_behavior_tree
         {
             key.segment_key_2 = msg->data;
         }
-        key_num_++;
+        config().blackboard->set<int>("key_num_",key_num_+1);
     }
     void IsHaveKeyCondition::passwordCallback(const robot_msgs::msg::SerialFullKey::SharedPtr msg)
     {
