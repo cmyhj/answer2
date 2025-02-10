@@ -1,6 +1,6 @@
 robot_serial_node:
   ros__parameters:
-    serial_name: /dev/pts/2
+    serial_name: /dev/pts/3
 
 bt_navigator:
   ros__parameters:

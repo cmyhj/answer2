@@ -111,7 +111,7 @@ def generate_launch_description():
             img_process_node,
             navigation_launch,
             robot_serial_node,
-            # rviz_node
+            rviz_node
             ]
 
 

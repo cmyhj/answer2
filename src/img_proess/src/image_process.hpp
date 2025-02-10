@@ -41,12 +41,12 @@ enum TargetType : uint8_t {
 enum GameMode{
     EASY,
     HARD
-}
+};
 enum PixelStatus{
     REACHABLE=0,    
     UNEXPLORED=50,
     OBSTACLE=100
-}
+};
 typedef struct
 {
     TargetType type;
@@ -66,7 +66,7 @@ private:
     int R_high_threshold_;
 
     std::vector<robot_msgs::msg::MapInfo> mapInfo;
-    std::vector<std::vector<int>> pixel_status_map(256, std::vector<int>(128, OBSTACLE));
+    std::vector<std::vector<int>> pixel_status_map;
     bool is_transfering_ = false;
     bool is_bullet_low_=false;
     bool is_completed_explored_=false;
@@ -115,7 +115,20 @@ private:
             (12.8-pose.y/40) <= mapInfo[STAR].pos.y - 1.0 ||
             (12.8-pose.y/40) >= mapInfo[STAR].pos.y + 1.0;
     }
-
+    // 内联函数：检查是否
+    inline bool isFarFromSentry(const cv::Point2f& pose) {
+        return pose.x/40 <= mapInfo[SENTRY].pos.x -0.6||
+            pose.x/40 >= mapInfo[SENTRY].pos.x + 0.6 ||
+            (12.8-pose.y/40) <= mapInfo[SENTRY].pos.y - 0.6 ||
+            (12.8-pose.y/40) >= mapInfo[SENTRY].pos.y + 0.6;
+    }
+    // 内联函数：检查是否
+    inline bool isInDectorRange(const cv::Point2f& pose) {
+        return pose.x/40 >= mapInfo[SENTRY].pos.x - 3 &&
+            pose.x/40 <= mapInfo[SENTRY].pos.x + 3 &&
+            (12.8-pose.y/40) >= mapInfo[SENTRY].pos.y - 3 &&
+            (12.8-pose.y/40) <= mapInfo[SENTRY].pos.y + 3;
+    }
     // 内联函数：检查是否远离敌方基地
     inline bool isFarFromEnemyBase(const cv::Point2f& pose) {
         if (mapInfo[ENEMY_BASE].is_exist_and_out_range==false) {

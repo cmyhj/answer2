@@ -39,7 +39,7 @@ namespace nav2_behavior_tree
             return {
                 BT::InputPort<double>("sentry_HP", "sentry HP"),
                 BT::OutputPort<int>("key_num_", "key_num_"),
-                BT::OnputPort<bool>("guess_enemy_base_exist", "guess is enemy base shield open?"),
+                BT::OutputPort<bool>("guess_enemy_base_exist", "guess is enemy base shield open?"),
 
             };
         }

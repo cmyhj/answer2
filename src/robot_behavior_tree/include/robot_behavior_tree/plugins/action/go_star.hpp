@@ -39,7 +39,7 @@ namespace nav2_behavior_tree
                     BT::InputPort<bool>("is_sentry_out_of_range", "is sentry out of range?"),
                     BT::InputPort<bool>("is_enemy_out_of_range", "is enemy out of range?"),
                     BT::InputPort<int64_t>("fullKey", "fullKey"),
-                    BT::OnputPort<bool>("guess_enemy_base_exist", "guess is enemy base shield open?"),
+                    BT::OutputPort<bool>("guess_enemy_base_exist", "guess is enemy base shield open?"),
                 };
         }
 
