@@ -48,6 +48,9 @@ list(APPEND plugin_libs go_star_action_bt_node)
 add_library(update_map_info_action_bt_node SHARED plugins/action/update_map_info.cpp)
 list(APPEND plugin_libs update_map_info_action_bt_node)
 
+add_library(explore_action_bt_node SHARED plugins/action/explore.cpp)
+list(APPEND plugin_libs explore_action_bt_node)
+
 add_library(if_HP_or_bullet_low_condition_bt_node SHARED plugins/condition/if_HP_or_bullet_low.cpp)
 list(APPEND plugin_libs if_HP_or_bullet_low_condition_bt_node)
 

@@ -1,5 +1,5 @@
-#ifndef GO_STAR_HPP_
-#define GO_STAR_HPP_
+#ifndef EXPLORE_HPP_
+#define EXPLORE_HPP_
 
 #include <string>
 #include <memory>
@@ -10,26 +10,24 @@
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "behaviortree_cpp_v3/action_node.h"
 #include <nav2_msgs/action/navigate_to_pose.hpp>
-#include <example_interfaces/msg/int64.hpp>
-
 
 namespace nav2_behavior_tree
 {
-    class GoStarAction : public BT::SyncActionNode
+    class ExploreAction : public BT::SyncActionNode
     {
     public:
-        GoStarAction(
+        ExploreAction(
             const std::string &action_name,
             const BT::NodeConfiguration &conf);
 
-        GoStarAction() = delete;
+        ExploreAction() = delete;
 
         BT::NodeStatus tick() override;
         static BT::PortsList providedPorts()
         {
             return {
-                    BT::InputPort<double>("star_pose_x", "Star position x"),
-                    BT::InputPort<double>("star_pose_y", "Star position y"),
+                    BT::InputPort<double>("explore_pose_x", "Explore position x"),
+                    BT::InputPort<double>("explore_pose_y", "Explore position y"),
                     BT::InputPort<double>("purple_entry_pose_x", "Purple entry position x"),
                     BT::InputPort<double>("purple_entry_pose_y", "Purple entry position y"),
                     BT::InputPort<double>("green_entry_pose_x", "Green entry position x"),
@@ -37,21 +35,18 @@ namespace nav2_behavior_tree
                     BT::InputPort<bool>("is_purple_entry_out_of_range", "is purple entry out of range?"),
                     BT::InputPort<bool>("is_green_entry_out_of_range", "is green entry out of range?"),
                     BT::InputPort<bool>("is_sentry_out_of_range", "is sentry out of range?"),
-                    BT::InputPort<bool>("is_enemy_out_of_range", "is enemy out of range?"),
-                    BT::InputPort<int64_t>("fullKey", "fullKey"),
-                    BT::OnputPort<bool>("guess_enemy_base_exist", "guess is enemy base shield open?"),
+                    BT::InputPort<bool>("is_unexplored_out_of_range", "is unexplored pose _out_of_range?"),
+                    BT::InputPort<bool>("is_completed_explored", "is completed explored?"),
                 };
         }
 
     private:
         rclcpp::Node::SharedPtr node_;
-        bool is_enemy_out_of_range;
+        bool is_unexplored_out_of_range;
         bool is_sentry_out_of_range;
         bool is_purple_entry_out_of_range;
         bool is_green_entry_out_of_range;
-        example_interfaces::msg::Int64 full_key;
         geometry_msgs::msg::PoseStamped goal_pose;
-        rclcpp::Publisher<example_interfaces::msg::Int64>::SharedPtr full_key_pub_;
         rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr goal_pub_;
     };
 

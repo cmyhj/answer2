@@ -48,6 +48,20 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
     } else {
         is_bullet_low_=false;
     }
+    //explore target update
+    is_completed_explored_=true;//没有未探索区域
+    for (int i = 0; i <= 256 && is_completed_explored_; ++i) { // 如果已经找到未探索区域，则不再继续外层循环
+        for (int j = 0; j <= 128 && is_completed_explored_; ++j) { // 同理，内层循环也受控制
+            if (pixel_status_map(i, j) == UNEXPLORED) {
+                is_completed_explored_ = false; // 标记未完全探索
+                map_info[UNEXPLOREDPOSE].is_exist_and_out_range = true;
+                map_info[UNEXPLOREDPOSE].pos.x = i;
+                map_info[UNEXPLOREDPOSE].pos.y = j;
+                map_info[UNEXPLOREDPOSE].is_exist_and_out_range = isOutOfRange(cv::Point2f(i, j));
+                break; // 找到第一个未探索区域后退出内层循环
+            }
+        }
+    }
     //地图处理
     int newWidth = 256;  // 新的宽度
     int newHeight = 128; // 新的高度
@@ -155,12 +169,40 @@ void imgProcess::publish_map(const cv::Mat resizedImage,const cv::Vec3b wallColo
     map.data.resize(map.info.width * map.info.height);
     for (int i = 0; i < resizedImage.rows; ++i) {
         for (int j = 0; j < resizedImage.cols; ++j) {
-            cv::Vec3b pixel = resizedImage.at<cv::Vec3b>(cv::Point(j,resizedImage.rows-i));
+            cv::Vec3b pixel = resizedImage.at<cv::Vec3b>(cv::Point(j, resizedImage.rows - i));
             int index = i * resizedImage.cols + j;
-            if (pixel[0] == wallColor[0] && pixel[1] == wallColor[1] && pixel[2] == wallColor[2]) {
-                map.data[index] = 100;
-            } else {
-                map.data[index] = 0;
+            if (game_mode_ == EASY) {
+                if (pixel[0] == wallColor[0] && pixel[1] == wallColor[1] && pixel[2] == wallColor[2]) {
+                    map.data[index] = 100;
+                } else {
+                    map.data[index] = 0;
+                }
+            } else if (game_mode_ == HARD) {
+                if (pixel[0] == 0 && pixel[1] == 0 && pixel[2] == 0) { // 黑色区域按原先记录发
+                    map.data[index] = pixel_status_map[j][i];
+                } else if (pixel[0] <= 30 && pixel[1] <= 30 && pixel[2] <= 30 && pixel_status_map[j][i] != REACHABLE) { // 灰色区域，且之前为初始化的黑色或灰色，记为未探索区域
+                    pixel_status_map[j][i] = UNEXPLORED;
+                    map.data[index] = REACHABLE;
+                } else { // 白色或其他颜色，可通行
+                    pixel_status_map[j][i] = REACHABLE;
+                    map.data[index] = REACHABLE;
+                    if (pixel[0] >= 250 && pixel[1] >= 250 && pixel[2] >= 250) { // 白色区域，查看周围像素，如果有黑色，则记为障碍物
+                        for (int di = -1; di <= 1; ++di) {
+                            for (int dj = -1; dj <= 1; ++dj) {
+                                int ni = i + di;
+                                int nj = j + dj;
+                                if (ni >= 0 && ni < resizedImage.rows && nj >= 0 && nj < resizedImage.cols) {
+                                    cv::Vec3b neighborPixel = resizedImage.at<cv::Vec3b>(cv::Point(nj, resizedImage.rows - ni));
+                                    if (neighborPixel[0] == 0 && neighborPixel[1] == 0 && neighborPixel[2] == 0) {
+                                        int neighborIndex = ni * resizedImage.cols + nj;
+                                        pixel_status_map[nj][ni] = OBSTACLE;
+                                        map.data[neighborIndex] = OBSTACLE;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -195,6 +237,7 @@ void imgProcess::publish_map_info(){
     mapInfoMsgs.sentry_hp = sentry_HP_;
     mapInfoMsgs.is_transfering = is_transfering_;
     mapInfoMsgs.is_bullet_low = is_bullet_low_;
+    mapInfoMsgs.is_completed_explored=is_completed_explored_;
     pubMapInfo->publish(mapInfoMsgs);
 }
 template<typename T>
@@ -219,11 +262,12 @@ void imgProcess::set_map_info(const cv::Mat& Image, uint8_t type){
     findContours(binaryImg, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE );
     //分类讨论
     if(contours.size()==0){
-        mapInfo[type].is_exist_and_out_range = false;
         if (type == ENEMY){
+            mapInfo[type].is_exist_and_out_range = false;
             enemy_num_=0;
         }
         if(type == ENEMY_BASE){
+            mapInfo[type].is_exist_and_out_range = false;
             cv::inRange(Image, cv::Scalar(140,110,160), cv::Scalar(160,130,180), binaryImg);
             findContours(binaryImg, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE );
             vector<vector<Point> > contours_poly( contours.size() );
@@ -391,7 +435,7 @@ imgProcess::imgProcess() : Node("img_process_node") {
     temp.pos.x = 0.0;
     temp.pos.y = 0.0;
     temp.pos.theta = 0.0;  // 注意Pose2D包含x,y,theta三个字段
-    for(int i=0; i<7; ++i){
+    for(int i=0; i<8; ++i){
         // 添加到vector
         mapInfo.push_back(temp);
     }

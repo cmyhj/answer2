@@ -73,6 +73,8 @@ public:
         blackboard_->set<double>("sentry_pose_y", 0.0);
         blackboard_->set<double>("enemy_pose_x", 0.0);
         blackboard_->set<double>("enemy_pose_y", 0.0);
+        blackboard_->set<double>("explore_pose_x", 0.0);
+        blackboard_->set<double>("explore_pose_y", 0.0);
         blackboard_->set<int>("enemy_num", 0);
         blackboard_->set<double>("sentry_HP", 0.0);
         blackboard_->set<bool>("is_transfering", false);
@@ -83,8 +85,11 @@ public:
         blackboard_->set<bool>("is_green_entry_out_of_range", false);
         blackboard_->set<bool>("is_sentry_out_of_range", false);
         blackboard_->set<bool>("is_enemy_out_of_range", false);
+        blackboard_->set<bool>("is_unexplored_out_of_range", false);
+        blackboard_->set<bool>("is_completed_explored", false);
         blackboard_->set<bool>("is_bullet_low", false);
 
+        blackboard_->set<bool>("guess_enemy_base_exist", false);
         blackboard_->set<int>("key_num_", 0);
         blackboard_->set<double>("health_threshold", 95.0);
         blackboard_->set<int64_t>("fullKey",0);
@@ -182,6 +187,8 @@ private:
                 blackboard->set<double>("sentry_pose_y", 0.0);
                 blackboard->set<double>("enemy_pose_x", 0.0);
                 blackboard->set<double>("enemy_pose_y", 0.0);
+                blackboard->set<double>("explore_pose_x", 0.0);
+                blackboard->set<double>("explore_pose_y", 0.0);
                 blackboard->set<int>("enemy_num", 0);
                 blackboard->set<double>("sentry_HP", 0.0);
                 blackboard->set<bool>("is_transfering", false);
@@ -192,8 +199,11 @@ private:
                 blackboard->set<bool>("is_green_entry_out_of_range", false);
                 blackboard->set<bool>("is_sentry_out_of_range", false);
                 blackboard->set<bool>("is_enemy_out_of_range", false);
+                blackboard->set<bool>("is_unexplored_out_of_range", false);
                 blackboard->set<bool>("is_bullet_low", false);
+                blackboard->set<bool>("is_completed_explored", false);
 
+                blackboard->set<bool>("guess_enemy_base_exist", false);
                 blackboard->set<double>("health_threshold", 95.0);
                 blackboard->set<int>("key_num_", 0);
                 blackboard->set<int64_t>("fullKey",0);

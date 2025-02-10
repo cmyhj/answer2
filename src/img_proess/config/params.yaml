@@ -93,6 +93,7 @@ robot_bt_decision_maker_node:
             - if_is_transfering_condition_bt_node
             - if_game_start_condition_bt_node
             - if_shield_open_condition_bt_node
+            - explore_action_bt_node
             # - nav2_navigate_to_pose_action_bt_node
 robot_bt_decision_maker_node_rclcpp_node:
     ros__parameters:

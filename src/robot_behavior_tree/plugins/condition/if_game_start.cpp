@@ -17,6 +17,7 @@ namespace nav2_behavior_tree
         {
             std::cout<<"等待游戏开始"<<std::endl;
             config().blackboard->set<int>("key_num_",0);
+            config().blackboard->set("guess_enemy_base_exist",false);
             return BT::NodeStatus::FAILURE;
         }
         return BT::NodeStatus::SUCCESS;

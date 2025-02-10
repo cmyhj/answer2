@@ -35,7 +35,8 @@ namespace nav2_behavior_tree
                     BT::InputPort<bool>("is_purple_entry_out_of_range", "is purple entry out of range?"),
                     BT::InputPort<bool>("is_green_entry_out_of_range", "is green entry out of range?"),
                     BT::InputPort<bool>("is_sentry_out_of_range", "is sentry out of range?"),
-                    BT::InputPort<bool>("is_enemy_out_of_range", "is enemy out of range?")
+                    BT::InputPort<bool>("is_enemy_out_of_range", "is enemy out of range?"),
+                    BT::InputPort<bool>("is_base_exist", "is base exist?"),
                 };
         }
 

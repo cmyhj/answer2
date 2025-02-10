@@ -53,6 +53,8 @@ namespace nav2_behavior_tree
         config().blackboard->set<double>("green_entry_pose_y", msg->map_info[GREENENTRY].pos.y);
         config().blackboard->set<double>("sentry_pose_x", msg->map_info[SENTRY].pos.x);
         config().blackboard->set<double>("sentry_pose_y", msg->map_info[SENTRY].pos.y);
+        config().blackboard->set<double>("explore_pose_x", msg->map_info[UNEXPLOREDPOSE].pos.x);
+        config().blackboard->set<double>("explore_pose_y", msg->map_info[UNEXPLOREDPOSE].pos.y);
         config().blackboard->set<double>("enemy_pose_x", msg->map_info[ENEMY].pos.x);
         config().blackboard->set<double>("enemy_pose_y", msg->map_info[ENEMY].pos.y);
         config().blackboard->set<int>("enemy_num", msg->enemy_num);
@@ -64,8 +66,10 @@ namespace nav2_behavior_tree
         config().blackboard->set<bool>("is_purple_entry_out_of_range", msg->map_info[PURPLEENTRY].is_exist_and_out_range);
         config().blackboard->set<bool>("is_green_entry_out_of_range", msg->map_info[GREENENTRY].is_exist_and_out_range);
         config().blackboard->set<bool>("is_sentry_out_of_range", msg->map_info[SENTRY].is_exist_and_out_range);
+        config().blackboard->set<bool>("is_unexplored_out_of_range", msg->map_info[UNEXPLOREDPOSE].is_exist_and_out_range);
         config().blackboard->set<bool>("is_enemy_out_of_range", msg->map_info[ENEMY].is_exist_and_out_range);
         config().blackboard->set<bool>("is_bullet_low", msg->is_bullet_low);
+        config().blackboard->set<bool>("is_completed_explored", msg->is_completed_explored);
     }
 } // namespace nav2_behavior_tree
 

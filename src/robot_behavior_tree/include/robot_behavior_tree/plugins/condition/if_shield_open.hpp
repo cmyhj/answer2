@@ -38,6 +38,7 @@ namespace nav2_behavior_tree
         {
             return {
                 BT::InputPort<bool>("is_enemy_base_exist", "is enemy base shield open?"),
+                BT::InputPort<bool>("guess_enemy_base_exist", "guess is enemy base shield open?"),
                 BT::OutputPort<double>("health_threshold", "health_threshold"),
             };
         }

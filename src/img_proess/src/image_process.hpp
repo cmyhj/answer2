@@ -35,11 +35,17 @@ enum TargetType : uint8_t {
     PURPLEENTRY,
     GREENENTRY,
     SENTRY,
-    ENEMY
+    ENEMY,
+    UNEXPLOREDPOSE
 };
 enum GameMode{
     EASY,
     HARD
+}
+enum PixelStatus{
+    REACHABLE=0,    
+    UNEXPLORED=50,
+    OBSTACLE=100
 }
 typedef struct
 {
@@ -60,8 +66,10 @@ private:
     int R_high_threshold_;
 
     std::vector<robot_msgs::msg::MapInfo> mapInfo;
+    std::vector<std::vector<int>> pixel_status_map(256, std::vector<int>(128, OBSTACLE));
     bool is_transfering_ = false;
     bool is_bullet_low_=false;
+    bool is_completed_explored_=false;
     bool game_mode_;
     std::array<std::array<int, 6>, 7> color_threshold = {};
     std::string map_frame="odom";
@@ -71,6 +79,7 @@ private:
     double sentry_HP_;
     geometry_msgs::msg::Pose2D cmd_vel_pose;
     cv::Point2f shoot_other_enemy_pose;
+
 
 
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscription_;    
@@ -98,6 +107,9 @@ private:
 
     // 内联函数：检查是否超出范围
     inline bool isOutOfRange(const cv::Point2f& pose) {
+        if (mapInfo[STAR].is_exist_and_out_range==false) {
+            return true;
+        }
         return pose.x/40 <= mapInfo[STAR].pos.x - 2.0 ||
             pose.x/40 >= mapInfo[STAR].pos.x + 2.0 ||
             (12.8-pose.y/40) <= mapInfo[STAR].pos.y - 1.0 ||
@@ -106,6 +118,9 @@ private:
 
     // 内联函数：检查是否远离敌方基地
     inline bool isFarFromEnemyBase(const cv::Point2f& pose) {
+        if (mapInfo[ENEMY_BASE].is_exist_and_out_range==false) {
+            return true;
+        }
         return pose.x/40 <= mapInfo[ENEMY_BASE].pos.x - 1.0 ||
             pose.x/40 >= mapInfo[ENEMY_BASE].pos.x + 1.0 ||
             (12.8-pose.y/40) <= mapInfo[ENEMY_BASE].pos.y - 1.0 ||

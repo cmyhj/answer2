@@ -27,6 +27,10 @@ namespace nav2_behavior_tree
 
     BT::NodeStatus GoBaseAction::tick()
     {
+        if (config().blackboard->get<bool>("is_base_exist")==false){
+            std::cout<<"尚未找到基地"<<std::endl;
+            return BT::NodeStatus::FAILURE;
+        }
         is_sentry_out_of_range = config().blackboard->get<bool>("is_sentry_out_of_range");
         is_purple_entry_out_of_range = config().blackboard->get<bool>("is_purple_entry_out_of_range");
         is_green_entry_out_of_range = config().blackboard->get<bool>("is_green_entry_out_of_range");
@@ -40,7 +44,7 @@ namespace nav2_behavior_tree
             goal_pose.pose.position.x=config().blackboard->get<double>("green_entry_pose_x");
             goal_pose.pose.position.y=config().blackboard->get<double>("green_entry_pose_y");
         }else{
-            std::cout<<"error:两个传送门识别错误"<<std::endl;
+            std::cout<<"两个传送门还未找到"<<std::endl;
             return BT::NodeStatus::FAILURE;
         }
         goal_pose.header.stamp = node_->now();

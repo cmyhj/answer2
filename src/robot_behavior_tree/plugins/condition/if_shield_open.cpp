@@ -13,7 +13,7 @@ namespace nav2_behavior_tree
     }
 
     BT::NodeStatus IfShieldOpenCondition::tick(){
-        if(config().blackboard->get<bool>("is_enemy_base_exist")==true)
+        if(config().blackboard->get<bool>("is_enemy_base_exist")==true || config().blackboard->get<bool>("guess_enemy_base_exist")==true)
         {
             // std::cout<<"基地开花咯"<<std::endl;
             config().blackboard->set<double>("health_threshold",25);

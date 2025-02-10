@@ -19,7 +19,8 @@ enum TargetType : uint8_t {
     PURPLEENTRY,
     GREENENTRY,
     SENTRY,
-    ENEMY
+    ENEMY,
+    UNEXPLOREDPOSE
 };
 
 namespace nav2_behavior_tree
@@ -53,17 +54,21 @@ namespace nav2_behavior_tree
                 BT::OutputPort<double>("star_pose_y", "Star position y"),
                 BT::OutputPort<double>("sentry_pose_x", "Sentry position x"),
                 BT::OutputPort<double>("sentry_pose_y", "Sentry position y"),
+                BT::OutputPort<double>("explore_pose_x", "Explored position x"),
+                BT::OutputPort<double>("explore_pose_y", "Explored position y"),
                 
-
+                
                 BT::OutputPort<bool>("is_transfering", "is sentry transfering?"),
                 BT::OutputPort<bool>("is_star_exist", "is star exist?"),
                 BT::OutputPort<bool>("is_base_exist", "is base exist?"),
                 BT::OutputPort<bool>("is_enemy_base_exist", "is enemy base exist?"),
+                BT::OutputPort<bool>("is_unexplored_out_of_range", "is unexplored pose _out_of_range?"),
                 BT::OutputPort<bool>("is_purple_entry_out_of_range", "is purple entry out of range?"),
                 BT::OutputPort<bool>("is_green_entry_out_of_range", "is green entry out of range?"),
                 BT::OutputPort<bool>("is_sentry_out_of_range", "is sentry out of range?"),
                 BT::OutputPort<bool>("is_enemy_out_of_range", "is enemy out of range?"),
                 BT::OutputPort<bool>("is_bullet_low", "is bullet low?"),
+                BT::OutputPort<bool>("is_completed_explored", "is completed explored?"),
             };
         }
 
