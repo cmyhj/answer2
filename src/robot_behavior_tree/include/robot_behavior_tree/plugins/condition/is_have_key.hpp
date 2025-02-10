@@ -43,6 +43,7 @@ namespace nav2_behavior_tree
                 BT::InputPort<int>("enemy_num", "Number of enemies"),
                 BT::InputPort<int>("key_num_", "key_num_"),
                 BT::OutputPort<int>("key_num_", "key_num_"),
+                BT::OutputPort<double>("health_threshold", "health_threshold"),
                 BT::OutputPort<int64_t>("fullKey", "fullKey"),
             };
         }

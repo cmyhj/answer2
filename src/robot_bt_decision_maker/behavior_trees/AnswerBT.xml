@@ -8,7 +8,7 @@
             <Fallback name="move">
                 <Condition ID="IfIsTransfering" is_transfering=""/>
                 <Sequence>
-                    <Condition ID="IsHaveKey" enemy_num="" fullKey="" key_num_=""/>
+                    <Condition ID="IsHaveKey" enemy_num="" fullKey="" health_threshold="" key_num_=""/>
                     <Inverter>
                         <Condition ID="IfShieldOpen" health_threshold="" is_enemy_base_exist=""/>
                     </Inverter>
@@ -98,6 +98,7 @@
         <Condition ID="IsHaveKey">
             <input_port name="enemy_num"/>
             <output_port name="fullKey"/>
+            <output_port name="health_threshold"/>
             <inout_port name="key_num_"/>
         </Condition>
         <Action ID="UpdateMapInfo">

@@ -37,7 +37,10 @@ enum TargetType : uint8_t {
     SENTRY,
     ENEMY
 };
-
+enum GameMode{
+    EASY,
+    HARD
+}
 typedef struct
 {
     TargetType type;
@@ -59,6 +62,7 @@ private:
     std::vector<robot_msgs::msg::MapInfo> mapInfo;
     bool is_transfering_ = false;
     bool is_bullet_low_=false;
+    bool game_mode_;
     std::array<std::array<int, 6>, 7> color_threshold = {};
     std::string map_frame="odom";
     std::string robot_frame="base_link"; 

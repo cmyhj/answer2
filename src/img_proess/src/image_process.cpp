@@ -19,8 +19,12 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
         int x = i;
         int y = 996;
         cv::Vec3b pixel = img.at<cv::Vec3b>(cv::Point(x, y));
+        RCLCPP_INFO(this->get_logger(),"R:%d,G:%d,B:%d",pixel[0],pixel[1],pixel[2]);
         if (pixel[0] == 131 && pixel[1] == 131 && pixel[2] == 131) {
+            game_mode_=EASY;
             cout++;
+        }else if(pixel[0] == 104 && pixel[1] == 104 && pixel[2] == 104){
+            game_mode_=HARD;
         }
     }
     sentry_HP_= cout/3.8;
@@ -393,6 +397,7 @@ imgProcess::imgProcess() : Node("img_process_node") {
     }
     wallColor={58,58,58};
     enemy_num_=0;
+    game_mode_=EASY;
     shoot_other_enemy_pose.x=0;
     shoot_other_enemy_pose.y=0;
     cmd_vel_pose.x=0;

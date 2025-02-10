@@ -51,6 +51,15 @@ namespace nav2_behavior_tree
             config().blackboard->set<int64_t>("fullKey", fullKey);
             return BT::NodeStatus::SUCCESS;
         }
+        else if (enemy_num == 1)
+        {
+            config().blackboard->set<double>("health_threshold",50);
+        }
+        else if (enemy_num == 2)
+        {
+            config().blackboard->set<double>("health_threshold",95);
+        }
+        
         return BT::NodeStatus::FAILURE;
     }
     void IsHaveKeyCondition::keyCallback(const example_interfaces::msg::Int64::SharedPtr msg)
