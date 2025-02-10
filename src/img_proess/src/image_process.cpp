@@ -55,6 +55,19 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
     } else {
         is_bullet_low_=false;
     }
+    
+    //地图处理
+    int newWidth = 256;  // 新的宽度
+    int newHeight = 128; // 新的高度
+    cv::Mat mapImage,findingImage,viewImage;
+    // 使用cv::resize函数降低分辨率
+    cv::resize(img, mapImage, cv::Size(newWidth, newHeight), 0, 0, cv::INTER_NEAREST);
+    cv::resize(img, findingImage, cv::Size(newWidth*4, newHeight*4), 0, 0, cv::INTER_NEAREST);
+    for (size_t i = 0; i < 7; i++)
+    {
+        set_map_info(findingImage,i);
+    }
+    publish_map(mapImage,wallColor);
     //explore target update
     is_completed_explored_=true;//没有未探索区域
     for (int i = 0; i < 256 && is_completed_explored_; ++i) { // 如果已经找到未探索区域，则不再继续外层循环
@@ -68,18 +81,6 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
                 break; // 找到第一个未探索区域后退出内层循环
             }
         }
-    }
-    //地图处理
-    int newWidth = 256;  // 新的宽度
-    int newHeight = 128; // 新的高度
-    cv::Mat mapImage,findingImage,viewImage;
-    // 使用cv::resize函数降低分辨率
-    cv::resize(img, mapImage, cv::Size(newWidth, newHeight), 0, 0, cv::INTER_NEAREST);
-    cv::resize(img, findingImage, cv::Size(newWidth*4, newHeight*4), 0, 0, cv::INTER_NEAREST);
-    publish_map(mapImage,wallColor);
-    for (size_t i = 0; i < 7; i++)
-    {
-        set_map_info(findingImage,i);
     }
     //发射逻辑
     if( (mapInfo[ENEMY_BASE].is_exist_and_out_range==true

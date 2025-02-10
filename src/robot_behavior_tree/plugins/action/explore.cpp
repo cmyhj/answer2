@@ -28,7 +28,7 @@ namespace nav2_behavior_tree
     BT::NodeStatus ExploreAction::tick()
     {
         if (config().blackboard->get<bool>("is_completed_explored")==true){
-            std::cout<<"已经探索过"<<std::endl;
+            std::cout<<"已经完全探索"<<std::endl;
             return BT::NodeStatus::FAILURE;
         }
         is_sentry_out_of_range = config().blackboard->get<bool>("is_sentry_out_of_range");
