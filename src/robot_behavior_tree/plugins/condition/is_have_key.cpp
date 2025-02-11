@@ -10,7 +10,6 @@ namespace nav2_behavior_tree
         const BT::NodeConfiguration &conf)
         : BT::ConditionNode(condition_name, conf)
     {
-        enemy_num = config().blackboard->get<int>("enemy_num");
         key_num_ = 0;
         fullKey = 0;
         key_used = (config().blackboard->get<double>("sentry_HP") == 0.0 ? true : false);
@@ -38,12 +37,12 @@ namespace nav2_behavior_tree
     {
         key_num_ = config().blackboard->get<int>("key_num_");
         callback_group_executor_.spin_some();
-        enemy_num = 2-key_num_;
-        config().blackboard->set<int>("enemy_num",enemy_num);
+        // enemy_num = 2-key_num_;
+        // config().blackboard->set<int>("enemy_num",enemy_num);
         // std::cout << "key1" << key.segment_key_1
         //           << "key2" << key.segment_key_2
         //           << "password"<<fullKey<< std::endl;
-        if (enemy_num == 0)
+        if (key_num_ == 2)
         {
             auto temp= key.segment_key_1;
             key.segment_key_1 = key.segment_key_2;
@@ -53,15 +52,14 @@ namespace nav2_behavior_tree
             config().blackboard->set<double>("health_threshold",25);
             return BT::NodeStatus::SUCCESS;
         }
-        else if (enemy_num == 1)
+        else if (key_num_ == 1)
         {
             config().blackboard->set<double>("health_threshold",50);
         }
-        else if (enemy_num == 2)
+        else if (key_num_ == 0)
         {
             config().blackboard->set<double>("health_threshold",95);
         }
-        
         return BT::NodeStatus::FAILURE;
     }
     void IsHaveKeyCondition::keyCallback(const example_interfaces::msg::Int64::SharedPtr msg)
@@ -74,7 +72,8 @@ namespace nav2_behavior_tree
         {
             key.segment_key_2 = msg->data;
         }
-        config().blackboard->set<int>("key_num_",key_num_+1);
+        key_num_++;
+        config().blackboard->set<int>("key_num_",key_num_);
     }
     void IsHaveKeyCondition::passwordCallback(const robot_msgs::msg::SerialFullKey::SharedPtr msg)
     {

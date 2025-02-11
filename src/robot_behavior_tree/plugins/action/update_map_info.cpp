@@ -58,6 +58,7 @@ namespace nav2_behavior_tree
         config().blackboard->set<double>("enemy_pose_x", msg->map_info[ENEMY].pos.x);
         config().blackboard->set<double>("enemy_pose_y", msg->map_info[ENEMY].pos.y);
         config().blackboard->set<double>("sentry_HP", msg->sentry_hp);
+        config().blackboard->set<int>("enemy_num", msg->enemy_num);
         config().blackboard->set<bool>("is_transfering", msg->is_transfering);
         config().blackboard->set<bool>("is_star_exist", msg->map_info[STAR].is_exist_and_out_range);
         config().blackboard->set<bool>("is_base_exist", msg->map_info[BASE].is_exist_and_out_range);

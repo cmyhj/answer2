@@ -75,6 +75,41 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
     {
         set_map_info(findingImage,i);
     }
+    example_interfaces::msg::Bool shoot;
+    shoot.data=false;
+    //发射逻辑
+    if( (mapInfo[ENEMY_BASE].is_exist_and_out_range==true
+        &&is_line_not_cross_obstacle(findingImage,
+                                    cv::Point2f(40*mapInfo[SENTRY].pos.x,-40*(mapInfo[SENTRY].pos.y-12.8)),
+                                    cv::Point2f(40*mapInfo[ENEMY_BASE].pos.x,-40*(mapInfo[ENEMY_BASE].pos.y-12.8))
+                                    )
+        )||(enemy_num_==2
+        &&is_line_not_cross_obstacle(findingImage,
+                                    cv::Point2f(40*mapInfo[SENTRY].pos.x,-40*(mapInfo[SENTRY].pos.y-12.8)),
+                                    shoot_other_enemy_pose
+                                    )
+        )||(enemy_num_>0
+        &&is_line_not_cross_obstacle(findingImage,
+                                    cv::Point2f(40*mapInfo[SENTRY].pos.x,-40*(mapInfo[SENTRY].pos.y-12.8)),
+                                    cv::Point2f(40*mapInfo[ENEMY].pos.x,-40*(mapInfo[ENEMY].pos.y-12.8))
+                                    )//后判断这个，如果都没法发射，机器人瞄准近处的enemy
+            )
+        )
+    {
+        shoot.data = true; // 设置消息内容为 true
+        // 发布消息
+        RCLCPP_WARN(this->get_logger(), "shoot");   
+    }
+    double distance1= sqrt(pow(mapInfo[SENTRY].pos.x-mapInfo[PURPLEENTRY].pos.x,2)
+                        +pow(mapInfo[SENTRY].pos.y-mapInfo[PURPLEENTRY].pos.y,2));
+    double distance2= sqrt(pow(mapInfo[SENTRY].pos.x-mapInfo[GREENENTRY].pos.x,2)
+                        +pow(mapInfo[SENTRY].pos.y-mapInfo[GREENENTRY].pos.y,2));
+    is_transfering_=(distance1<=0.3||distance2<=0.3);
+    if(is_transfering_){
+        cmd_vel_pose.x=0;
+        cmd_vel_pose.y=0;
+    }
+    pubResultCmd->publish(cmd_vel_pose);
     publish_map(mapImage,wallColor);
     //explore target update
     if(game_mode_==EASY){
@@ -102,40 +137,12 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
     else{
         is_completed_explored_=false;
     }
-    double distance1= sqrt(pow(mapInfo[SENTRY].pos.x-mapInfo[PURPLEENTRY].pos.x,2)
-                        +pow(mapInfo[SENTRY].pos.y-mapInfo[PURPLEENTRY].pos.y,2));
-    double distance2= sqrt(pow(mapInfo[SENTRY].pos.x-mapInfo[GREENENTRY].pos.x,2)
-                        +pow(mapInfo[SENTRY].pos.y-mapInfo[GREENENTRY].pos.y,2));
-    is_transfering_=(distance1<=0.3||distance2<=0.3);
+    
     // cv::Mat rrImg;
     // cv::resize(mapImage, rrImg,cv::Size(256*5, 128*5),0,0, cv::INTER_LINEAR);
     // cv::imshow("v", rrImg);
     // cv::waitKey(1);
-    //发射逻辑
-    if( (mapInfo[ENEMY_BASE].is_exist_and_out_range==true
-        &&is_line_not_cross_obstacle(findingImage,
-                                    cv::Point2f(40*mapInfo[SENTRY].pos.x,-40*(mapInfo[SENTRY].pos.y-12.8)),
-                                    cv::Point2f(40*mapInfo[ENEMY_BASE].pos.x,-40*(mapInfo[ENEMY_BASE].pos.y-12.8))
-                                    )
-        )||(enemy_num_==2
-        &&is_line_not_cross_obstacle(findingImage,
-                                    cv::Point2f(40*mapInfo[SENTRY].pos.x,-40*(mapInfo[SENTRY].pos.y-12.8)),
-                                    shoot_other_enemy_pose
-                                    )
-        )||(enemy_num_>0
-        &&is_line_not_cross_obstacle(findingImage,
-                                    cv::Point2f(40*mapInfo[SENTRY].pos.x,-40*(mapInfo[SENTRY].pos.y-12.8)),
-                                    cv::Point2f(40*mapInfo[ENEMY].pos.x,-40*(mapInfo[ENEMY].pos.y-12.8))
-                                    )//后判断这个，如果都没法发射，机器人瞄准近处的enemy
-            )
-        )
-    {
-        example_interfaces::msg::Bool shoot;
-        shoot.data = true; // 设置消息内容为 true
-        // 发布消息
-        RCLCPP_WARN(this->get_logger(), "shoot");
-        pubShoot->publish(shoot);
-    }
+    
     // RCLCPP_INFO(this->get_logger(), "----------------sentrypos: %f,%f",mapInfo[SENTRY].pos.x,mapInfo[SENTRY].pos.y);
 
     //test
@@ -177,11 +184,7 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
     }
     publish_sentry_odom(pubOdomAftMapped, tf_broadcaster);
     publish_map_info();
-    if(is_transfering_){
-        cmd_vel_pose.x=0;
-        cmd_vel_pose.y=0;
-    }
-    pubResultCmd->publish(cmd_vel_pose);
+    pubShoot->publish(shoot);
 }
 
 void imgProcess::cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg) {
@@ -201,6 +204,10 @@ void imgProcess::cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg
     }else{
         // RCLCPP_INFO(this->get_logger(),"减速！random_number: %d,vy:%f",random_number,msg->linear.y);
         cmd_vel_pose.y=0;//msg->linear.y;
+    }
+    if (enemy_num_ != 0&&mapInfo[BASE].is_exist_and_out_range==false) {
+        cmd_vel_pose.x=-cmd_vel_pose.x;
+        cmd_vel_pose.y=-cmd_vel_pose.y;
     }
 
 }
@@ -418,11 +425,11 @@ void imgProcess::set_map_info(const cv::Mat& Image, uint8_t type){
         approxPolyDP( contours[i], contours_poly[i], 3, true );
         minEnclosingCircle( contours_poly[i], centers[i], radius[i] );
     }
-    for (size_t i = 0; i < contours.size(); i++)
+    for (int i = 0; i < contours.size(); i++)
     {
-        for (size_t j = -5; j < 5; j++)
+        for (int j = -1; j <= 1; j++)
         {
-            for (size_t k = -5; k < 5; k++)
+            for (int k = -1; k <= 1; k++)
             {
                 pixel_status_map[int(centers[i].x/4)+j][128-int(centers[i].y/4)+k] = REACHABLE;
             }

@@ -55,6 +55,7 @@ namespace nav2_behavior_tree
                 BT::OutputPort<double>("sentry_pose_y", "Sentry position y"),
                 BT::OutputPort<double>("explore_pose_x", "Explored position x"),
                 BT::OutputPort<double>("explore_pose_y", "Explored position y"),
+                BT::OutputPort<int>("enemy_num", "Enemy number"),
                 
                 
                 BT::OutputPort<bool>("is_transfering", "is sentry transfering?"),

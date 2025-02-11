@@ -37,10 +37,8 @@ namespace nav2_behavior_tree
                 BT::InputPort<bool>("is_sentry_out_of_range", "is sentry out of range?"),
                 BT::InputPort<double>("purple_entry_pose_x", "Purple entry position x"),
                 BT::InputPort<double>("purple_entry_pose_y", "Purple entry position y"),
-                BT::InputPort<double>("sentry_pose_x", "Sentry position x"),
-                BT::InputPort<double>("sentry_pose_y", "Sentry position y"),
-
-
+                // BT::InputPort<double>("sentry_pose_x", "Sentry position x"),
+                // BT::InputPort<double>("sentry_pose_y", "Sentry position y"),
                 };
         }
 

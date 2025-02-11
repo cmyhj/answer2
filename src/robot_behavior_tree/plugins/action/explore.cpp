@@ -38,15 +38,15 @@ namespace nav2_behavior_tree
             std::cout<<"已经完全探索"<<std::endl;
             return BT::NodeStatus::FAILURE;
         }
-        if(is_sentry_out_of_range==is_purple_entry_out_of_range){
+        if (is_sentry_out_of_range==is_unexplored_out_of_range){
+            goal_pose.pose.position.x=config().blackboard->get<double>("explore_pose_x");
+            goal_pose.pose.position.y=config().blackboard->get<double>("explore_pose_y");
+        }else if(is_sentry_out_of_range==is_purple_entry_out_of_range){
             goal_pose.pose.position.x=config().blackboard->get<double>("purple_entry_pose_x");
             goal_pose.pose.position.y=config().blackboard->get<double>("purple_entry_pose_y");
         }else if(is_sentry_out_of_range==is_green_entry_out_of_range){
             goal_pose.pose.position.x=config().blackboard->get<double>("green_entry_pose_x");
             goal_pose.pose.position.y=config().blackboard->get<double>("green_entry_pose_y");
-        }else if (is_sentry_out_of_range==is_unexplored_out_of_range){
-            goal_pose.pose.position.x=config().blackboard->get<double>("explore_pose_x");
-            goal_pose.pose.position.y=config().blackboard->get<double>("explore_pose_y");
         }else{
             std::cout<<"两个传送门还未找到"<<std::endl;
             return BT::NodeStatus::FAILURE;
