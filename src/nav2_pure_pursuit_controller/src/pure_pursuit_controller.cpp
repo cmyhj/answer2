@@ -141,20 +141,27 @@ geometry_msgs::msg::TwistStamped PurePursuitController::computeVelocityCommands(
       global_plan_.poses[0].pose.position.y-pose.pose.position.y);
     if(start_distance<0.07){
       stick_cout++;
-      if (stick_cout>25){
-        stick_cout=25;
+      if (stick_cout>30){
+        stick_cout=31;
+      }
+      if (stick_cout==16){
+        stick_cout=31;
       }
     }
     else{
-      stick_cout--;
+      stick_cout-=2;
       if (stick_cout<0){
         stick_cout=0;
       }
     }
     if(stick_cout>15)
       {
-        lookahead_dist_-=0.5;
-        desired_linear_vel_-=0.5;
+        RCLCPP_ERROR(
+          rclcpp::get_logger("tf_help"),
+          "减速%f",start_distance
+        );
+        lookahead_dist_=0.2;
+        target_xy_tolerance_=0.05;
       }
   }
   // Find the first pose which is at a distance greater than the specified lookahed distance
@@ -165,8 +172,10 @@ geometry_msgs::msg::TwistStamped PurePursuitController::computeVelocityCommands(
 
   double linear_vel_x,linear_vel_y;
   // If the last pose is still within lookahed distance, take the last pose
+  // bool near=false;
   if (goal_pose_it == transformed_plan.poses.end()) {
     goal_pose_it = std::prev(transformed_plan.poses.end());
+    // near=true;
   }
   auto goal_pose = goal_pose_it->pose;
   if (goal_pose.position.x > target_xy_tolerance_) {
@@ -183,23 +192,20 @@ geometry_msgs::msg::TwistStamped PurePursuitController::computeVelocityCommands(
   }else {
     linear_vel_y = 0.0;
   }
-  
-  auto last_pose_it = std::prev(transformed_plan.poses.end());
-  auto last_pose = last_pose_it->pose;
 
-  double distance = hypot(
-    last_pose.position.x,
-    last_pose.position.y
-  );
+  // double distance = hypot(
+  //   goal_pose.position.x,
+  //   goal_pose.position.y
+  // );
 
-  if (distance <= 1 ) {//邻近距离减速
-    // RCLCPP_ERROR(
-    //     rclcpp::get_logger("tf_help"),
-    //     "快到目的了%f",distance
-    //   );
-    linear_vel_x = linear_vel_x*(1-distance);
-    linear_vel_y = linear_vel_y*(1-distance);
-  }
+  // if (near) {//邻近距离减速
+  //   RCLCPP_ERROR(
+  //       rclcpp::get_logger("tf_help"),
+  //       "快到目的了%f",distance
+  //     );
+  //   linear_vel_x = linear_vel_x*(distance/lookahead_dist_);
+  //   linear_vel_y = linear_vel_y*(distance/lookahead_dist_);
+  // }
   // RCLCPP_WARN(logger_, "goalpose:x=%f y=%f",goal_pose.position.x,goal_pose.position.y);
   // Create and publish a TwistStamped message with the desired velocity
   geometry_msgs::msg::TwistStamped cmd_vel;

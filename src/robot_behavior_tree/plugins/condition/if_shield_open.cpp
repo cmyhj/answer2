@@ -19,7 +19,6 @@ namespace nav2_behavior_tree
             config().blackboard->set<double>("health_threshold",25);
             return BT::NodeStatus::SUCCESS;
         }
-        config().blackboard->set<double>("health_threshold",95);
         return BT::NodeStatus::FAILURE;
     }
 

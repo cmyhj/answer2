@@ -75,7 +75,7 @@ public:
         blackboard_->set<double>("enemy_pose_y", 0.0);
         blackboard_->set<double>("explore_pose_x", 0.0);
         blackboard_->set<double>("explore_pose_y", 0.0);
-        blackboard_->set<int>("enemy_num", 0);
+        blackboard_->set<int>("enemy_num", 2);
         blackboard_->set<double>("sentry_HP", 0.0);
         blackboard_->set<bool>("is_transfering", false);
         blackboard_->set<bool>("is_star_exist", false);
@@ -189,7 +189,7 @@ private:
                 blackboard->set<double>("enemy_pose_y", 0.0);
                 blackboard->set<double>("explore_pose_x", 0.0);
                 blackboard->set<double>("explore_pose_y", 0.0);
-                blackboard->set<int>("enemy_num", 0);
+                blackboard->set<int>("enemy_num", 2);
                 blackboard->set<double>("sentry_HP", 0.0);
                 blackboard->set<bool>("is_transfering", false);
                 blackboard->set<bool>("is_star_exist", false);

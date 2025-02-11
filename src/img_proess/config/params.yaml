@@ -1,6 +1,6 @@
 robot_serial_node:
   ros__parameters:
-    serial_name: /dev/pts/3
+    serial_name: /dev/pts/7
 
 bt_navigator:
   ros__parameters:
@@ -125,7 +125,7 @@ controller_server:
     general_goal_checker:
         stateful: True
         plugin: "nav2_controller::SimpleGoalChecker"
-        xy_goal_tolerance: 0.001
+        xy_goal_tolerance: 0.1
         yaw_goal_tolerance: 6.0
         # DWB parameters
     FollowPath:
@@ -146,15 +146,15 @@ local_costmap:
       global_frame: odom
       robot_base_frame: base_link
       rolling_window: true
-      width: 3
-      height: 3
+      width: 1
+      height: 1
       resolution: 0.1
       robot_radius: 0.1
       plugins: ["static_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 1.0
-        inflation_radius: 0.2
+        inflation_radius: 0.1
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: True
@@ -167,7 +167,7 @@ global_costmap:
       publish_frequency: 60.0
       global_frame: map
       robot_base_frame: base_link
-      robot_radius: 0.1
+      robot_radius: 0.0
       resolution: 0.1
       track_unknown_space: true
       plugins: ["static_layer", "inflation_layer"]
@@ -177,7 +177,7 @@ global_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 1.0
-        inflation_radius: 0.2
+        inflation_radius: 0.05
       always_send_full_costmap: True
 
 # map_server:
@@ -201,7 +201,7 @@ planner_server:
     planner_plugins: ["GridBased"]
     GridBased:
       plugin: "nav2_navfn_planner/NavfnPlanner"
-      tolerance: 0.01
+      tolerance: 0.05
       use_astar: true # 是否使用A*。如果错误，则使用Dijkstra的扩展。
       allow_unknown: true # 是否允许在未知空间进行规划。
       use_final_approach_orientation: true # 如果为true，则由planner产生的路径的最后姿态将其方向设置为进近方向，即连接路径最后两点的向量的方向

@@ -36,9 +36,10 @@ namespace nav2_behavior_tree
 
     BT::NodeStatus IsHaveKeyCondition::tick()
     {
-        enemy_num = config().blackboard->get<int>("enemy_num");
         key_num_ = config().blackboard->get<int>("key_num_");
         callback_group_executor_.spin_some();
+        enemy_num = 2-key_num_;
+        config().blackboard->set<int>("enemy_num",enemy_num);
         // std::cout << "key1" << key.segment_key_1
         //           << "key2" << key.segment_key_2
         //           << "password"<<fullKey<< std::endl;
@@ -49,6 +50,7 @@ namespace nav2_behavior_tree
             key.segment_key_2 = temp;
             key_pub_->publish(key);
             config().blackboard->set<int64_t>("fullKey", fullKey);
+            config().blackboard->set<double>("health_threshold",25);
             return BT::NodeStatus::SUCCESS;
         }
         else if (enemy_num == 1)

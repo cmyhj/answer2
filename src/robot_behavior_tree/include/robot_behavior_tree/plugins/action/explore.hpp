@@ -37,6 +37,7 @@ namespace nav2_behavior_tree
                     BT::InputPort<bool>("is_sentry_out_of_range", "is sentry out of range?"),
                     BT::InputPort<bool>("is_unexplored_out_of_range", "is unexplored pose _out_of_range?"),
                     BT::InputPort<bool>("is_completed_explored", "is completed explored?"),
+                    BT::InputPort<bool>("is_base_exist", "is base exist?"),
                 };
         }
 

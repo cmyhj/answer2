@@ -33,7 +33,15 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
     sentry_HP_= cout/3.8;
     //RCLCPP_ERROR(this->get_logger(),"HP:%f",sentry_HP_);
     if (sentry_HP_==0){//游戏重开
-        pixel_status_map.resize(256, std::vector<int>(128, OBSTACLE));
+        //    RCLCPP_INFO(this->get_logger(),"game over");
+        for (auto &row : pixel_status_map){
+            std::fill(row.begin(), row.end(), OBSTACLE);
+        }
+        for (int i = 0; i < 8; ++i) {
+        mapInfo[i].is_exist_and_out_range=false;
+        mapInfo[i].pos.x=1000;
+        mapInfo[i].pos.y=1000;
+    }
     }
     //bullet update
     cout = 0;
@@ -55,7 +63,7 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
     } else {
         is_bullet_low_=false;
     }
-    
+
     //地图处理
     int newWidth = 256;  // 新的宽度
     int newHeight = 128; // 新的高度
@@ -69,19 +77,40 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
     }
     publish_map(mapImage,wallColor);
     //explore target update
-    is_completed_explored_=true;//没有未探索区域
-    for (int i = 0; i < 256 && is_completed_explored_; ++i) { // 如果已经找到未探索区域，则不再继续外层循环
-        for (int j = 0; j < 128 && is_completed_explored_; ++j) { // 同理，内层循环也受控制
-            if (pixel_status_map[i][j] == UNEXPLORED) {
-                is_completed_explored_ = false; // 标记未完全探索
-                mapInfo[UNEXPLOREDPOSE].is_exist_and_out_range = true;
-                mapInfo[UNEXPLOREDPOSE].pos.x = i/10;
-                mapInfo[UNEXPLOREDPOSE].pos.y = j/10;
-                mapInfo[UNEXPLOREDPOSE].is_exist_and_out_range = isOutOfRange(cv::Point2f(i, j));
-                break; // 找到第一个未探索区域后退出内层循环
+    if(game_mode_==EASY){
+        is_completed_explored_=true;
+    }
+    else if(sentry_HP_>0){
+        if (mapInfo[BASE].is_exist_and_out_range==false&&move_check==true){
+            RCLCPP_INFO(this->get_logger(), "explore");
+            is_completed_explored_=true;
+            for (size_t i = 0; i < 256 && is_completed_explored_; i++)
+            {
+                for (size_t j = 0; j < 128 && is_completed_explored_; j++)
+                {
+                    if(pixel_status_map[i][j]==UNEXPLORED){
+                        is_completed_explored_=false;
+                        findNearestEplorePose(pixel_status_map,i,j,UNEXPLORED);
+                        break;
+                    }
+                }
             }
+        }else{
+            is_completed_explored_=!findNearestEplorePose(pixel_status_map,int(mapInfo[SENTRY].pos.x*10),int(mapInfo[SENTRY].pos.y*10),UNEXPLORED);//没有未探索区域
         }
     }
+    else{
+        is_completed_explored_=false;
+    }
+    double distance1= sqrt(pow(mapInfo[SENTRY].pos.x-mapInfo[PURPLEENTRY].pos.x,2)
+                        +pow(mapInfo[SENTRY].pos.y-mapInfo[PURPLEENTRY].pos.y,2));
+    double distance2= sqrt(pow(mapInfo[SENTRY].pos.x-mapInfo[GREENENTRY].pos.x,2)
+                        +pow(mapInfo[SENTRY].pos.y-mapInfo[GREENENTRY].pos.y,2));
+    is_transfering_=(distance1<=0.3||distance2<=0.3);
+    // cv::Mat rrImg;
+    // cv::resize(mapImage, rrImg,cv::Size(256*5, 128*5),0,0, cv::INTER_LINEAR);
+    // cv::imshow("v", rrImg);
+    // cv::waitKey(1);
     //发射逻辑
     if( (mapInfo[ENEMY_BASE].is_exist_and_out_range==true
         &&is_line_not_cross_obstacle(findingImage,
@@ -104,6 +133,7 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
         example_interfaces::msg::Bool shoot;
         shoot.data = true; // 设置消息内容为 true
         // 发布消息
+        RCLCPP_WARN(this->get_logger(), "shoot");
         pubShoot->publish(shoot);
     }
     // RCLCPP_INFO(this->get_logger(), "----------------sentrypos: %f,%f",mapInfo[SENTRY].pos.x,mapInfo[SENTRY].pos.y);
@@ -126,15 +156,31 @@ void imgProcess::imageCallback(sensor_msgs::msg::Image rosImage) {
         // }
     // }
     // 绘制 ENEMY_BASE 区域的框
-    // cv::Point2f enemyBaseTopLeft(40*(mapInfo[ENEMY_BASE].pos.x - 1.0), -40*(mapInfo[ENEMY_BASE].pos.y - 1.0-12.8));
-    // cv::Point2f enemyBaseBottomRight(40*(mapInfo[ENEMY_BASE].pos.x + 1.0), -40*(mapInfo[ENEMY_BASE].pos.y + 1.0-12.8));
-    // cv::rectangle(img, cv::Point(2032,1013), cv::Point(2047,1014), cv::Scalar(0, 0, 255), 2); // 红色框
-    // // cv::putText(img, "HP: " + std::to_string(sentry_HP_),cv::Point(10, 950), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 1);
-    // cv::imshow("view", img);
-    // waitKey(1);
-    
+    // cv::rectangle(img, cv::Point(1900,1000), cv::Point(2048,1024), cv::Scalar(0, 0, 255), 2); // 红色框
+    // cv::rectangle(img, cv::Point(0,975), cv::Point(390,1024), cv::Scalar(0, 0, 255), 2); // 红色框
+    // // // cv::putText(img, "HP: " + std::to_string(sentry_HP_),cv::Point(10, 950), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 1);
+
+    for( size_t i = 0; i < 8; i++ ){
+        cv::circle(findingImage, cv::Point2f(40*mapInfo[i].pos.x,-40*(mapInfo[i].pos.y-12.8)),5, cv::Scalar(30*i, 20*i, 255-30*i), 2);
+    }
+    cv::imshow("view", findingImage);
+    waitKey(1);
+
+    if(enemy_num_>0&&mapInfo[BASE].is_exist_and_out_range==false){//敌人在范围内，且地图上没有base，则远离
+        std::vector<cv::Point> points = getExtendedPoints(cv::Point(int(mapInfo[ENEMY].pos.x*10),int(mapInfo[ENEMY].pos.y*10)), cv::Point(int(mapInfo[SENTRY].pos.x*10),int(mapInfo[SENTRY].pos.y*10)));
+        for (const cv::Point& p : points) {
+            if (pixel_status_map[p.x][p.y] != OBSTACLE) {
+                mapInfo[ENEMY].pos.x=p.x/10.0;
+                mapInfo[ENEMY].pos.y=p.y/10.0;
+            }
+        }
+    }
     publish_sentry_odom(pubOdomAftMapped, tf_broadcaster);
     publish_map_info();
+    if(is_transfering_){
+        cmd_vel_pose.x=0;
+        cmd_vel_pose.y=0;
+    }
     pubResultCmd->publish(cmd_vel_pose);
 }
 
@@ -146,18 +192,17 @@ void imgProcess::cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg
     int random_number = dis(gen);
     if(random_number<1+9*abs(msg->linear.x))
     {
-        cmd_vel_pose.x = msg->linear.x;    
+        cmd_vel_pose.x = msg->linear.x;
     }else{
-        // RCLCPP_INFO(this->get_logger(),"减速！random_number: %d,vx:%f",random_number,msg->linear.x);
-        cmd_vel_pose.x=0;
+        cmd_vel_pose.x=0;//-msg->linear.x;
     }
     if(random_number<1+9*abs(msg->linear.y)){
         cmd_vel_pose.y = -msg->linear.y;
     }else{
         // RCLCPP_INFO(this->get_logger(),"减速！random_number: %d,vy:%f",random_number,msg->linear.y);
-        cmd_vel_pose.y=0;
+        cmd_vel_pose.y=0;//msg->linear.y;
     }
-    
+
 }
 
 void imgProcess::publish_map(const cv::Mat resizedImage,const cv::Vec3b wallColor){
@@ -179,27 +224,58 @@ void imgProcess::publish_map(const cv::Mat resizedImage,const cv::Vec3b wallColo
         for (int j = 0; j < resizedImage.cols; ++j) {
             cv::Vec3b pixel = resizedImage.at<cv::Vec3b>(cv::Point(j, resizedImage.rows - i));
             int index = i * resizedImage.cols + j;
-            if (game_mode_ == EASY) 
+            if (game_mode_ == EASY)
             {
                 if (pixel[0] == wallColor[0] && pixel[1] == wallColor[1] && pixel[2] == wallColor[2]) {
                     map.data[index] = 100;
                 } else {
                     map.data[index] = 0;
                 }
-            } 
-            else if (game_mode_ == HARD) 
+            }
+            else if (game_mode_ == HARD)
             {
-                if(isInDectorRange(cv::Point2f(4*j, -4*(i-128)))==true && pixel[0]>30 && pixel[1]>30 && pixel[2]>30 && pixel[0]==pixel[1]&& pixel[2] ==pixel[1] && pixel_status_map[j][i] != REACHABLE) 
+                if (isInSentry(cv::Point2f(4*j, -4*(i-128)))==true)
+                {
+                    pixel_status_map[j][i] = REACHABLE;
+                    map.data[index] = REACHABLE;
+                }
+                else if(sentry_HP_!=0 && pixel[0]>30 && pixel[1]>30 && pixel[2]>30 && abs(pixel[0]-pixel[1])<=2&&abs(pixel[2]-pixel[1])<=2 && pixel_status_map[j][i] != REACHABLE)
+                {
+                    // RCLCPP_INFO(this->get_logger(),"B:%d,G:%d,R:%d",pixel[0],pixel[1],pixel[2]);&& isInDectorRange(cv::Point2f(4*j, -4*(i-128)))==true 
+                    // cv::circle(resizedImage, cv::Point(j, resizedImage.rows - i), 1, cv::Scalar(0, 255, 0), 1);
+                    if(isFarFromSentry(cv::Point2f(4*j, -4*(i-128)))==false||isFarFromEnemyBase(cv::Point2f(4*j, -4*(i-128)))==false)
                     {
-                        // RCLCPP_INFO(this->get_logger(),"B:%d,G:%d,R:%d",pixel[0],pixel[1],pixel[2]);
-                        cv::circle(resizedImage, cv::Point(j, resizedImage.rows - i), 1, cv::Scalar(0, 255, 0), 1);
-                        pixel_status_map[j][i] = UNEXPLORED;
-                        map.data[index] = REACHABLE;
-                        if (isFarFromSentry(cv::Point2f(4*j, -4*(i-128)))==false) 
+                        pixel_status_map[j][i] = REACHABLE;
+                    }
+                    if(pixel_status_map[j][i] != REACHABLE){
+                        // int cout=0;
+                        for (int di = -1; di <= 1; ++di) 
                         {
-                            pixel_status_map[j][i] = REACHABLE;
+                            for (int dj = -1; dj <= 1; ++dj) 
+                            {
+                                int ni = i + di;
+                                int nj = j + dj;
+                                if (ni >= 0 && ni < resizedImage.rows && nj >= 0 && nj < resizedImage.cols) 
+                                {
+                                    cv::Vec3b neighborPixel = resizedImage.at<cv::Vec3b>(cv::Point(nj, resizedImage.rows - ni));
+                                    if (neighborPixel[0]==neighborPixel[1]&&neighborPixel[2]==neighborPixel[0]&&neighborPixel[0] <= 50  && isInSentry(cv::Point2f(4*nj, -4*(ni-128)))==false) 
+                                    {
+                                        pixel_status_map[j][i] = UNEXPLORED;//cout++;
+                                    }
+                                }
+                            }
                         }
+                        // if(cout==1)
+                        // {
+                        //     pixel_status_map[j][i] = UNEXPLORED;
+                        // }
+                    }
+                    else{
+                        pixel_status_map[j][i] = REACHABLE;
+                    }
+                    map.data[index] = REACHABLE;
                     
+
                     // else if (isFarFromSentry(cv::Point2f(4*j, -4*(i-128)))==true) 
                     // { // 白色或其他颜色，可通行
                     //     pixel_status_map[j][i] = REACHABLE;
@@ -227,17 +303,30 @@ void imgProcess::publish_map(const cv::Mat resizedImage,const cv::Vec3b wallColo
                     //     //     }
                     //     // }
                     // }
-                    
+
+                }else if(sentry_HP_!=0 && (pixel[0]+pixel[1]+pixel[2])>100){
+                    pixel_status_map[j][i] = REACHABLE;
+                    map.data[index] = REACHABLE;
                 }else{
                     map.data[index] = pixel_status_map[j][i];
                 }
+                if(i==0||j==0||i==resizedImage.rows-1||j==resizedImage.cols-1||
+                (j>=237&&i>=0&&j<=256&&i<=3)||//子弹区
+                (j>=0&&i>=0&&j<=49&&i<=7)||//血量区
+                (j>=0&&i>=126&&j<=3&&i<=128)||//帧率区
+                (last_game_start_==0&&i>=0&&i<=128&&j>=0&&j<=256)
+                ){
+                    map.data[index] = OBSTACLE;
+                    pixel_status_map[j][i] = OBSTACLE;
+                }
+                last_game_start_=sentry_HP_;
             }
         }
     }
-    cv::Mat rImg;
-    cv::resize(resizedImage, rImg,cv::Size(256*5, 128*5),0,0, cv::INTER_LINEAR);
-    cv::imshow("map", rImg);
-    cv::waitKey(1);
+    // cv::Mat rImg;
+    // cv::resize(resizedImage, rImg,cv::Size(256*5, 128*5),0,0, cv::INTER_LINEAR);
+    // cv::imshow("map", rImg);
+    // cv::waitKey(1);
     mapPublisher->publish(map);
     // RCLCPP_INFO(this->get_logger(), "map published");
 }
@@ -287,20 +376,23 @@ void imgProcess::set_posestamp(T & out)
 void imgProcess::set_map_info(const cv::Mat& Image, uint8_t type){
     //寻找目标颜色
     cv::Mat binaryImg;
-    cv::inRange(Image, cv::Scalar(color_threshold[type][0], color_threshold[type][1], color_threshold[type][2]), 
+    cv::Mat hsv_image;
+    cv::cvtColor(Image, hsv_image,CV_BGR2HSV);
+    cv::inRange(hsv_image, cv::Scalar(color_threshold[type][0], color_threshold[type][1], color_threshold[type][2]),
                        cv::Scalar(color_threshold[type][3], color_threshold[type][4], color_threshold[type][5]), binaryImg);
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
     findContours(binaryImg, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE );
     //分类讨论
     if(contours.size()==0){
+        //RCLCPP_INFO(this->get_logger(), "no %d target", type);
         if (type == ENEMY){
             mapInfo[type].is_exist_and_out_range = false;
             enemy_num_=0;
         }
         if(type == ENEMY_BASE){
             mapInfo[type].is_exist_and_out_range = false;
-            cv::inRange(Image, cv::Scalar(140,110,160), cv::Scalar(160,130,180), binaryImg);
+            cv::inRange(hsv_image, cv::Scalar(160,64,128), cv::Scalar(163,90,178), binaryImg);
             findContours(binaryImg, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE );
             vector<vector<Point> > contours_poly( contours.size() );
             vector<float>radius( contours.size() );
@@ -326,7 +418,18 @@ void imgProcess::set_map_info(const cv::Mat& Image, uint8_t type){
         approxPolyDP( contours[i], contours_poly[i], 3, true );
         minEnclosingCircle( contours_poly[i], centers[i], radius[i] );
     }
+    for (size_t i = 0; i < contours.size(); i++)
+    {
+        for (size_t j = -5; j < 5; j++)
+        {
+            for (size_t k = -5; k < 5; k++)
+            {
+                pixel_status_map[int(centers[i].x/4)+j][128-int(centers[i].y/4)+k] = REACHABLE;
+            }
+        }
+    }
     if (contours.size() == 1) {
+        // cv::circle(Image, centers[0], radius[0], cv::Scalar(0, 0, 255), 2);
         switch (type)
         {
         case STAR:
@@ -337,27 +440,30 @@ void imgProcess::set_map_info(const cv::Mat& Image, uint8_t type){
                 mapInfo[type].pos.y = 12.8-centers[0].y/40;
                 mapInfo[type].is_exist_and_out_range = true;
             }
-            else{
-                mapInfo[type].is_exist_and_out_range = false;
-            }
             break;
         case SENTRY:
         case GREENENTRY:
         case PURPLEENTRY:
-            is_transfering_ = false;
             if(radius[0]>6){
                 mapInfo[type].pos.x = centers[0].x/40;
                 mapInfo[type].pos.y = 12.8-centers[0].y/40;
                 mapInfo[type].is_exist_and_out_range = isOutOfRange(centers[0]);
             }
-            else{
-                mapInfo[type].is_exist_and_out_range = false;
-            }
             break;
         case ENEMY:
-            mapInfo[type].is_exist_and_out_range = false;
-            enemy_num_=0;
-            break;
+            mapInfo[type].pos.x = centers[0].x/40;
+            mapInfo[type].pos.y = 12.8-centers[0].y/40;
+            if(isFarFromEnemyBase(centers[0]))
+            {
+                mapInfo[type].is_exist_and_out_range = isOutOfRange(centers[0]);
+                enemy_num_=1;
+            }
+            else{
+                mapInfo[type].is_exist_and_out_range = false;
+                enemy_num_=0;
+            }
+            //RCLCPP_WARN(this->get_logger(), "enemy_num_:%d",enemy_num_);
+                break;
         default:
             break;
         }
@@ -369,22 +475,22 @@ void imgProcess::set_map_info(const cv::Mat& Image, uint8_t type){
         case BASE:
         case ENEMY_BASE:
         case SENTRY:
+
             // RCLCPP_WARN(this->get_logger(), "more than one object detected,type:%d",type);
             break;
         case GREENENTRY:
         case PURPLEENTRY:
-            is_transfering_ = false;
             for( size_t i = 0; i < contours.size(); i++ ){
                 if (radius[i]>6){
                     mapInfo[type].pos.x = centers[i].x/40;
                     mapInfo[type].pos.y = 12.8-centers[i].y/40;
                     mapInfo[type].is_exist_and_out_range = isOutOfRange(centers[i]);
+                    // cv::circle(Image, centers[i], radius[i], cv::Scalar(0, 0, 255), 2);
                     if (Image.at<cv::Vec3b>(centers[i].y,centers[i].x)==cv::Vec3b(240,170,89)){
-                        is_transfering_ = true;
                         RCLCPP_INFO(this->get_logger(),"Transfering");
                     }
                 }
-                
+
             }
             break;
         case ENEMY:
@@ -392,6 +498,7 @@ void imgProcess::set_map_info(const cv::Mat& Image, uint8_t type){
             double min_dist = 10000.0;
             enemy_num_=0;
             for( size_t i = 0; i < contours.size(); i++ ){
+                // cv::circle(Image, centers[i], radius[i], cv::Scalar(0, 0, 255), 2);
                 if (radius[i]>5 &&
                     isFarFromEnemyBase(centers[i]))
                 {
@@ -445,6 +552,12 @@ bool imgProcess::is_line_not_cross_obstacle( cv::Mat& image, cv::Point2f pt1, cv
     // RCLCPP_ERROR(this->get_logger(), "can shoot!!!!!!!!!!!");
     return true;
 }
+
+void imgProcess::timer_callback() {
+    move_check=(pow(old_explore_pose.x-mapInfo[UNEXPLOREDPOSE].pos.x,2)+pow(old_explore_pose.y-mapInfo[UNEXPLOREDPOSE].pos.y,2))>0.01;
+    old_explore_pose.x=mapInfo[UNEXPLOREDPOSE].pos.x;
+    old_explore_pose.y=mapInfo[UNEXPLOREDPOSE].pos.y;
+}
 //构造函数
 imgProcess::imgProcess() : Node("img_process_node") {
     RCLCPP_INFO(this->get_logger(), "img_process_node started");
@@ -473,20 +586,23 @@ imgProcess::imgProcess() : Node("img_process_node") {
     }
     wallColor={58,58,58};
     enemy_num_=0;
+    last_game_start_=0;
     game_mode_=EASY;
     shoot_other_enemy_pose.x=0;
     shoot_other_enemy_pose.y=0;
     cmd_vel_pose.x=0;
     cmd_vel_pose.y=0;
     cmd_vel_pose.theta=0;
+    old_explore_pose.x=0;
+    old_explore_pose.y=0;
     pixel_status_map.resize(256, std::vector<int>(128, OBSTACLE));
-    color_threshold[STAR]= {210,110,100,  250,130,130};
-    color_threshold[BASE]={80,50,10,  100,70,30};
-    color_threshold[ENEMY_BASE]={70,70,140,  80,80,150};
-    color_threshold[PURPLEENTRY]={200,90,180,  240,110,220};
-    color_threshold[GREENENTRY]={110,180,0,  130,250,70};
-    color_threshold[SENTRY]={220, 150, 70,  255, 200, 100};
-    color_threshold[ENEMY]={90, 90, 230,  110, 110, 255};
+    color_threshold[STAR] =         {115, 115, 179, 120, 204, 255};
+    color_threshold[BASE] =         {100, 100, 51 , 110, 204, 128};
+    color_threshold[ENEMY_BASE] =   {0  , 102, 76 , 3  , 140, 153};
+    color_threshold[PURPLEENTRY] =  {142, 128, 60, 148, 153, 255};
+    color_threshold[GREENENTRY] =   {72 , 210, 60, 78 , 230, 255};
+    color_threshold[SENTRY] =       {100, 150, 210, 110, 170, 255};
+    color_threshold[ENEMY] =        {0  , 140, 50, 5  , 178, 255};
     // 创建QoS配置
     rclcpp::QoS qos(rclcpp::KeepLast(1));
     qos.reliability(RMW_QOS_POLICY_RELIABILITY_RELIABLE);  // 设置可靠性策略为Reliable
@@ -502,10 +618,13 @@ imgProcess::imgProcess() : Node("img_process_node") {
     //map发布
     mapPublisher = this->create_publisher<nav_msgs::msg::OccupancyGrid>("/map",qos);
     pubOdomAftMapped = this->create_publisher<nav_msgs::msg::Odometry>("/Odometry", 100000);
-    pubResultCmd = this->create_publisher<geometry_msgs::msg::Pose2D>("/posee", 100000);
+    pubResultCmd = this->create_publisher<geometry_msgs::msg::Pose2D>("/pose", 100000);
     pubMapInfo = this->create_publisher<robot_msgs::msg::MapInfoMsgs>("/map_info", 100000);
     pubShoot = this->create_publisher<example_interfaces::msg::Bool>("/shoot", 1000);
     tf_broadcaster = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
+    auto period_ms = std::chrono::seconds(static_cast<int64_t>(10));
+    move_check_timer_= rclcpp::create_timer(this, this->get_clock(), period_ms,
+                                  std::bind(&imgProcess::timer_callback, this));
 }
 
 int main(int argc, char** argv)

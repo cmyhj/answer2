@@ -42,7 +42,6 @@ namespace nav2_behavior_tree
                 BT::OutputPort<double>("base_pose_y", "Base position y"),
                 BT::OutputPort<double>("enemy_base_pose_x", "Enemy base position x"),
                 BT::OutputPort<double>("enemy_base_pose_y", "Enemy base position y"),
-                BT::OutputPort<int>("enemy_num", "Number of enemies"),
                 BT::OutputPort<double>("enemy_pose_x", "Enemy position x"),
                 BT::OutputPort<double>("enemy_pose_y", "Enemy position y"),
                 BT::OutputPort<double>("purple_entry_pose_x", "Purple entry position x"),
