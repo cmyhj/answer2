@@ -35,8 +35,8 @@ namespace nav2_behavior_tree
         is_purple_entry_out_of_range = config().blackboard->get<bool>("is_purple_entry_out_of_range");
         is_green_entry_out_of_range = config().blackboard->get<bool>("is_green_entry_out_of_range");
         if (is_enemy_out_of_range==is_sentry_out_of_range){
-            // enemy_pose_x=config().blackboard->get<double>("enemy_pose_x");
-            // enemy_pose_y=config().blackboard->get<double>("enemy_pose_y");
+            enemy_pose_x=config().blackboard->get<double>("enemy_pose_x");
+            enemy_pose_y=config().blackboard->get<double>("enemy_pose_y");
             // sentry_pose_x=config().blackboard->get<double>("sentry_pose_x");
             // sentry_pose_y=config().blackboard->get<double>("sentry_pose_y");
             
@@ -48,6 +48,7 @@ namespace nav2_behavior_tree
             // else{
                 goal_pose.pose.position.x=enemy_pose_x;
                 goal_pose.pose.position.y=enemy_pose_y;
+                        std::cout<<"追击敌人中:"<<enemy_pose_x<<","<<enemy_pose_y<<std::endl;
             // }
             
         }else if(is_sentry_out_of_range==is_purple_entry_out_of_range){

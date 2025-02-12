@@ -54,7 +54,9 @@ protected:
     geometry_msgs::msg::PoseStamped & out_pose,
     const rclcpp::Duration & transform_tolerance
   ) const;
-
+  double calculateDistanceToDestination(
+    const geometry_msgs::msg::PoseStamped & pose,
+    const nav_msgs::msg::Path & global_plan);
   rclcpp_lifecycle::LifecycleNode::WeakPtr node_;
   std::shared_ptr<tf2_ros::Buffer> tf_;
   std::string plugin_name_;
@@ -66,6 +68,7 @@ protected:
   double target_xy_tolerance_;
   double lookahead_dist_;
   double max_angular_vel_;
+  double distance_to_destination=10.0;
   int stick_cout=0;
   rclcpp::Duration transform_tolerance_ {0, 0};
 

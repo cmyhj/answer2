@@ -20,6 +20,7 @@
 #include "std_msgs/msg/string.hpp"
 #include "nav_msgs/msg/occupancy_grid.hpp"
 #include "nav_msgs/msg/odometry.hpp"
+#include "nav_msgs/msg/path.hpp"
 #include "geometry_msgs/msg/transform_stamped.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 #include "geometry_msgs/msg/pose2_d.hpp"
@@ -75,21 +76,25 @@ private:
     bool is_completed_explored_=false;
     bool game_mode_;
     bool move_check=true;
+    bool find_one_outdoor=false;
     cv::Point2f old_explore_pose;
     std::array<std::array<int, 6>, 7> color_threshold = {};
     std::string map_frame="odom";
     std::string robot_frame="base_link"; 
     cv::Vec3b wallColor;
     int enemy_num_;
+    int move_check_cout;
     int last_game_start_;
     double sentry_HP_;
     geometry_msgs::msg::Pose2D cmd_vel_pose;
     cv::Point2f shoot_other_enemy_pose;
+    cv::Point2f one_outdoor_pose;
 
 
 
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscription_;    
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_subscription_;
+    rclcpp::Subscription<nav_msgs::msg::Path>::SharedPtr plan_sub_;
     rclcpp::Publisher<nav_msgs::msg::OccupancyGrid>::SharedPtr mapPublisher;
     rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr pubOdomAftMapped;
     rclcpp::Publisher<geometry_msgs::msg::Pose2D>::SharedPtr pubResultCmd;
@@ -97,6 +102,7 @@ private:
     rclcpp::Publisher<example_interfaces::msg::Bool>::SharedPtr pubShoot;
     std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster;
     nav_msgs::msg::Odometry odomAftMapped;  
+    rclcpp::TimerBase::SharedPtr start_check_timer_;
     rclcpp::TimerBase::SharedPtr move_check_timer_;
 
 
@@ -111,7 +117,9 @@ private:
         std::unique_ptr<tf2_ros::TransformBroadcaster> & tf_br);
     void cmd_vel_callback(const geometry_msgs::msg::Twist::SharedPtr msg);
     void imageCallback(sensor_msgs::msg::Image rosImage);
-    void timer_callback();
+    void nav_check_callback(const nav_msgs::msg::Path::SharedPtr msg);
+    void check_callback();
+    void move_check_callback();
 
     // 内联函数：检查是否超出范围
     inline bool isOutOfRange(const cv::Point2f& pose) {
@@ -137,10 +145,33 @@ private:
             (12.8-pose.y/40) >= mapInfo[SENTRY].pos.y + 3;
     }
     inline bool isInSentry(const cv::Point2f& pose) {
-        return pose.x/40 >= mapInfo[SENTRY].pos.x - 0.2 &&
-            pose.x/40 <= mapInfo[SENTRY].pos.x + 0.2 &&
-            (12.8-pose.y/40) >= mapInfo[SENTRY].pos.y - 0.2 &&
-            (12.8-pose.y/40) <= mapInfo[SENTRY].pos.y + 0.2;
+        return pose.x/40 >= mapInfo[SENTRY].pos.x - 0.15 &&
+            pose.x/40 <= mapInfo[SENTRY].pos.x + 0.15 &&
+            (12.8-pose.y/40) >= mapInfo[SENTRY].pos.y - 0.15 &&
+            (12.8-pose.y/40) <= mapInfo[SENTRY].pos.y + 0.15;
+    }
+    inline bool isInDoor(const cv::Point2f& pose) {
+        return (pose.x/40 >= mapInfo[PURPLEENTRY].pos.x - 0.4 &&
+            pose.x/40 <= mapInfo[PURPLEENTRY].pos.x + 0.4 &&
+            (12.8-pose.y/40) >= mapInfo[PURPLEENTRY].pos.y - 0.4 &&
+            (12.8-pose.y/40) <= mapInfo[PURPLEENTRY].pos.y + 0.4)||
+            (pose.x/40 >= mapInfo[GREENENTRY].pos.x - 0.4 &&
+            pose.x/40 <= mapInfo[GREENENTRY].pos.x + 0.4 &&
+            (12.8-pose.y/40) >= mapInfo[GREENENTRY].pos.y - 0.4 &&
+            (12.8-pose.y/40) <= mapInfo[GREENENTRY].pos.y + 0.4)||(
+                pose.x >= one_outdoor_pose.x - 16 &&
+                pose.x <= one_outdoor_pose.x + 16 &&
+                pose.y >= one_outdoor_pose.y - 16 &&
+                pose.y <= one_outdoor_pose.y + 16
+            );
+    }
+    inline bool onOutDoor(const cv::Point2f& pose) {
+        return (
+                pose.x >= one_outdoor_pose.x - 16 &&
+                pose.x <= one_outdoor_pose.x + 16 &&
+                pose.y >= one_outdoor_pose.y - 16 &&
+                pose.y <= one_outdoor_pose.y + 16
+            );
     }
     // 内联函数：检查是否
     inline bool isInDectorRange(const cv::Point2f& pose) {
@@ -154,10 +185,12 @@ private:
         if (mapInfo[ENEMY_BASE].pos.x==1000) {
             return true;
         }
-        return pose.x/40 <= mapInfo[ENEMY_BASE].pos.x - 1.0 ||
+        return (pose.x/40 <= mapInfo[ENEMY_BASE].pos.x - 1.0 ||
             pose.x/40 >= mapInfo[ENEMY_BASE].pos.x + 1.0 ||
             (12.8-pose.y/40) <= mapInfo[ENEMY_BASE].pos.y - 1.0 ||
-            (12.8-pose.y/40) >= mapInfo[ENEMY_BASE].pos.y + 1.0;
+            (12.8-pose.y/40) >= mapInfo[ENEMY_BASE].pos.y + 1.0)||
+            (pose.x/40 <= 24 ||
+            pose.x/40 >= 25);
     }
 
     // 内联函数：计算两点之间的距离

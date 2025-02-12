@@ -3,7 +3,7 @@
     <!-- ////////// -->
     <BehaviorTree ID="AnswerBehaviorTree">
         <Sequence>
-            <Action ID="UpdateMapInfo" base_pose_x="0.0" base_pose_y="0.0" enemy_base_pose_x="0.0" enemy_base_pose_y="0.0" enemy_pose_x="0.0" enemy_pose_y="0.0" explore_pose_x="" explore_pose_y="" green_entry_pose_x="0.0" green_entry_pose_y="0.0" is_base_exist="" is_bullet_low="" is_completed_explored="" is_enemy_base_exist="" is_enemy_out_of_range="" is_green_entry_out_of_range="" is_purple_entry_out_of_range="" is_sentry_out_of_range="" is_star_exist="" is_transfering="" is_unexplored_out_of_range="" purple_entry_pose_x="0.0" purple_entry_pose_y="0.0" sentry_HP="0.0" sentry_pose_x="0.0" sentry_pose_y="0.0" star_pose_x="0.0" star_pose_y="0.0"/>
+            <Action ID="UpdateMapInfo" base_pose_x="0.0" base_pose_y="0.0" enemy_base_pose_x="0.0" enemy_base_pose_y="0.0" enemy_num="" enemy_pose_x="0.0" enemy_pose_y="0.0" explore_pose_x="" explore_pose_y="" green_entry_pose_x="0.0" green_entry_pose_y="0.0" is_base_exist="" is_bullet_low="" is_completed_explored="" is_enemy_base_exist="" is_enemy_out_of_range="" is_green_entry_out_of_range="" is_purple_entry_out_of_range="" is_sentry_out_of_range="" is_star_exist="" is_transfering="" is_unexplored_out_of_range="" purple_entry_pose_x="0.0" purple_entry_pose_y="0.0" sentry_HP="0.0" sentry_pose_x="0.0" sentry_pose_y="0.0" star_pose_x="0.0" star_pose_y="0.0"/>
             <Condition ID="IfGameStart" guess_enemy_base_exist="" key_num_="" sentry_HP=""/>
             <Fallback name="move">
                 <Sequence>
@@ -11,21 +11,24 @@
                     <Inverter>
                         <Condition ID="IfShieldOpen" guess_enemy_base_exist="" health_threshold="" is_enemy_base_exist=""/>
                     </Inverter>
-                    <Action ID="GoStar" fullKey="" green_entry_pose_x="" green_entry_pose_y="" guess_enemy_base_exist="" is_enemy_out_of_range="" is_green_entry_out_of_range="" is_purple_entry_out_of_range="" is_sentry_out_of_range="" purple_entry_pose_x="" purple_entry_pose_y="" star_pose_x="" star_pose_y=""/>
+                    <Fallback>
+                        <Action ID="Explore" enemy_base_pose_x="" explore_pose_x="" explore_pose_y="" green_entry_pose_x="" green_entry_pose_y="" is_base_exist="" is_completed_explored="" is_green_entry_out_of_range="" is_purple_entry_out_of_range="" is_sentry_out_of_range="" is_unexplored_out_of_range="" purple_entry_pose_x="" purple_entry_pose_y=""/>
+                        <Action ID="GoStar" fullKey="" green_entry_pose_x="" green_entry_pose_y="" guess_enemy_base_exist="" is_enemy_out_of_range="" is_green_entry_out_of_range="" is_purple_entry_out_of_range="" is_sentry_out_of_range="" purple_entry_pose_x="" purple_entry_pose_y="" star_pose_x="" star_pose_y=""/>
+                    </Fallback>
                 </Sequence>
                 <Fallback>
                     <Sequence>
                         <Condition ID="IfHPOrBulletLow" is_bullet_low="" sentry_HP=""/>
                         <Action ID="GoBase" base_pose_x="" base_pose_y="" green_entry_pose_x="" green_entry_pose_y="" is_base_exist="" is_enemy_out_of_range="" is_green_entry_out_of_range="" is_purple_entry_out_of_range="" is_sentry_out_of_range="" purple_entry_pose_x="" purple_entry_pose_y=""/>
                     </Sequence>
-                    <Action ID="Explore" explore_pose_x="" explore_pose_y="" green_entry_pose_x="" green_entry_pose_y="" is_base_exist="" is_completed_explored="" is_green_entry_out_of_range="" is_purple_entry_out_of_range="" is_sentry_out_of_range="" is_unexplored_out_of_range="" purple_entry_pose_x="" purple_entry_pose_y=""/>
+                    <Action ID="Explore" enemy_base_pose_x="" explore_pose_x="" explore_pose_y="" green_entry_pose_x="" green_entry_pose_y="" is_base_exist="" is_completed_explored="" is_green_entry_out_of_range="" is_purple_entry_out_of_range="" is_sentry_out_of_range="" is_unexplored_out_of_range="" purple_entry_pose_x="" purple_entry_pose_y=""/>
                 </Fallback>
                 <Sequence>
                     <Condition ID="IfShieldOpen" guess_enemy_base_exist="" health_threshold="" is_enemy_base_exist=""/>
                     <Action ID="GoEnemyBase" enemy_base_pose_x="" enemy_base_pose_y="" green_entry_pose_x="" green_entry_pose_y="" is_enemy_out_of_range="" is_green_entry_out_of_range="" is_purple_entry_out_of_range="" is_sentry_out_of_range="" purple_entry_pose_x="" purple_entry_pose_y=""/>
                 </Sequence>
-                <Action ID="AimEnemy" enemy_num="" enemy_pose_x="" enemy_pose_y="" green_entry_pose_x="" green_entry_pose_y="" is_enemy_out_of_range="" is_green_entry_out_of_range="" is_purple_entry_out_of_range="" is_sentry_out_of_range="" purple_entry_pose_x="" purple_entry_pose_y="" sentry_pose_x="" sentry_pose_y=""/>
-                <Action ID="Explore" explore_pose_x="" explore_pose_y="" green_entry_pose_x="" green_entry_pose_y="" is_base_exist="" is_completed_explored="" is_green_entry_out_of_range="" is_purple_entry_out_of_range="" is_sentry_out_of_range="" is_unexplored_out_of_range="" purple_entry_pose_x="" purple_entry_pose_y=""/>
+                <Action ID="AimEnemy" enemy_num="" enemy_pose_x="" enemy_pose_y="" green_entry_pose_x="" green_entry_pose_y="" is_enemy_out_of_range="" is_green_entry_out_of_range="" is_purple_entry_out_of_range="" is_sentry_out_of_range="" purple_entry_pose_x="" purple_entry_pose_y=""/>
+                <Action ID="Explore" enemy_base_pose_x="" explore_pose_x="" explore_pose_y="" green_entry_pose_x="" green_entry_pose_y="" is_base_exist="" is_completed_explored="" is_green_entry_out_of_range="" is_purple_entry_out_of_range="" is_sentry_out_of_range="" is_unexplored_out_of_range="" purple_entry_pose_x="" purple_entry_pose_y=""/>
                 <Action ID="GoStar" fullKey="" green_entry_pose_x="" green_entry_pose_y="" guess_enemy_base_exist="" is_enemy_out_of_range="" is_green_entry_out_of_range="" is_purple_entry_out_of_range="" is_sentry_out_of_range="" purple_entry_pose_x="" purple_entry_pose_y="" star_pose_x="" star_pose_y=""/>
             </Fallback>
         </Sequence>
@@ -35,7 +38,7 @@
         <Action ID="AimEnemy">
             <input_port name="enemy_num"/>
             <input_port name="enemy_pose_x"/>
-            <input_port name="enemy_pose_y"/>
+            <inout_port name="enemy_pose_y"/>
             <input_port name="green_entry_pose_x"/>
             <input_port name="green_entry_pose_y"/>
             <input_port name="is_enemy_out_of_range"/>
@@ -44,10 +47,9 @@
             <input_port name="is_sentry_out_of_range"/>
             <input_port name="purple_entry_pose_x"/>
             <input_port name="purple_entry_pose_y"/>
-            <input_port name="sentry_pose_x"/>
-            <input_port name="sentry_pose_y"/>
         </Action>
         <Action ID="Explore">
+            <input_port name="enemy_base_pose_x"/>
             <input_port name="explore_pose_x"/>
             <input_port name="explore_pose_y"/>
             <input_port name="green_entry_pose_x"/>
@@ -128,6 +130,7 @@
             <output_port name="base_pose_y"/>
             <output_port name="enemy_base_pose_x"/>
             <output_port name="enemy_base_pose_y"/>
+            <output_port name="enemy_num"/>
             <output_port name="enemy_pose_x"/>
             <output_port name="enemy_pose_y"/>
             <input_port name="explore_pose_x"/>

@@ -54,7 +54,7 @@ namespace nav2_behavior_tree
         }
         else if (key_num_ == 1)
         {
-            config().blackboard->set<double>("health_threshold",50);
+            config().blackboard->set<double>("health_threshold",95);
         }
         else if (key_num_ == 0)
         {

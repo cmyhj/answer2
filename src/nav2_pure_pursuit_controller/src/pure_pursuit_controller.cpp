@@ -130,7 +130,7 @@ geometry_msgs::msg::TwistStamped PurePursuitController::computeVelocityCommands(
   (void)goal_checker;
   node_.lock()->get_parameter(plugin_name_ + ".lookahead_dist", lookahead_dist_);
   node_.lock()->get_parameter(plugin_name_ + ".desired_linear_vel", desired_linear_vel_);
-
+  node_.lock()->get_parameter(plugin_name_ + ".target_xy_tolerance", target_xy_tolerance_);
   auto transformed_plan = transformGlobalPlan(pose);
 
   //防止隔墙的bug
@@ -141,27 +141,27 @@ geometry_msgs::msg::TwistStamped PurePursuitController::computeVelocityCommands(
       global_plan_.poses[0].pose.position.y-pose.pose.position.y);
     if(start_distance<0.07){
       stick_cout++;
-      if (stick_cout>30){
-        stick_cout=31;
+      if (stick_cout>180){
+        stick_cout=181;
       }
-      if (stick_cout==16){
-        stick_cout=31;
+      if (stick_cout==90){
+        stick_cout=181;
       }
     }
     else{
-      stick_cout-=2;
+      stick_cout-=4;
       if (stick_cout<0){
         stick_cout=0;
       }
     }
-    if(stick_cout>15)
+    if(stick_cout>90)
       {
-        RCLCPP_ERROR(
-          rclcpp::get_logger("tf_help"),
-          "减速%f",start_distance
-        );
-        lookahead_dist_=0.2;
-        target_xy_tolerance_=0.05;
+        // RCLCPP_ERROR(
+        //   rclcpp::get_logger("tf_help"),
+        //   "卡住自救%f",start_distance
+        // );
+        lookahead_dist_=0.1;
+        target_xy_tolerance_=0.0;
       }
   }
   // Find the first pose which is at a distance greater than the specified lookahed distance
@@ -184,6 +184,7 @@ geometry_msgs::msg::TwistStamped PurePursuitController::computeVelocityCommands(
     linear_vel_x = -desired_linear_vel_;
   }else {
     linear_vel_x = 0.0;
+    // RCLCPP_WARN(logger_, "直行:x=%f y=%f",goal_pose.position.x,goal_pose.position.y);
   }
   if (goal_pose.position.y > target_xy_tolerance_) {
     linear_vel_y = desired_linear_vel_;
@@ -191,6 +192,7 @@ geometry_msgs::msg::TwistStamped PurePursuitController::computeVelocityCommands(
     linear_vel_y = -desired_linear_vel_;
   }else {
     linear_vel_y = 0.0;
+      // RCLCPP_WARN(logger_, "直行:x=%f y=%f",goal_pose.position.x,goal_pose.position.y);
   }
 
   // double distance = hypot(
@@ -198,15 +200,14 @@ geometry_msgs::msg::TwistStamped PurePursuitController::computeVelocityCommands(
   //   goal_pose.position.y
   // );
 
-  // if (near) {//邻近距离减速
-  //   RCLCPP_ERROR(
-  //       rclcpp::get_logger("tf_help"),
-  //       "快到目的了%f",distance
-  //     );
-  //   linear_vel_x = linear_vel_x*(distance/lookahead_dist_);
-  //   linear_vel_y = linear_vel_y*(distance/lookahead_dist_);
-  // }
-  // RCLCPP_WARN(logger_, "goalpose:x=%f y=%f",goal_pose.position.x,goal_pose.position.y);
+  if (distance_to_destination<1) {//邻近距离减速
+    // RCLCPP_ERROR(
+    //     rclcpp::get_logger("tf_help"),
+    //     "快到目的了%f",distance_to_destination
+    //   );
+    linear_vel_x = linear_vel_x*distance_to_destination;
+    linear_vel_y = linear_vel_y*distance_to_destination;
+  }
   // Create and publish a TwistStamped message with the desired velocity
   geometry_msgs::msg::TwistStamped cmd_vel;
   cmd_vel.header.frame_id = pose.header.frame_id;
@@ -233,7 +234,7 @@ PurePursuitController::transformGlobalPlan(
   if (global_plan_.poses.empty()) {
     throw nav2_core::PlannerException("Received plan with zero length");
   }
-
+  distance_to_destination = calculateDistanceToDestination(pose, global_plan_);
   // let's get the pose of the robot in the frame of the plan
   geometry_msgs::msg::PoseStamped robot_pose;
   if (!transformPose(
@@ -297,7 +298,34 @@ PurePursuitController::transformGlobalPlan(
 
   return transformed_plan;
 }
+double PurePursuitController::calculateDistanceToDestination(
+  const geometry_msgs::msg::PoseStamped & pose,
+  const nav_msgs::msg::Path & global_plan)
+{
+  double min_distance = std::numeric_limits<double>::max();
+  double distance_to_destination = 0.0;
 
+  // 遍历全局路径上的每个点
+  for (const auto & point : global_plan.poses)
+  {
+    // 计算机器人当前位置到该点的距离
+    double distance = euclidean_distance(pose, point);
+
+    // 找到距离最小的点
+    if (distance < min_distance)
+    {
+      min_distance = distance;
+    }
+  }
+
+  // 最近点到全局路径终点的距离，即为机器人到目的地的距离
+  distance_to_destination = euclidean_distance(global_plan.poses.back(), global_plan.poses.front());
+  // RCLCPP_ERROR(
+  //       rclcpp::get_logger("tf_help"),
+  //       "distance_to_destination%f",distance_to_destination
+  //     );
+  return distance_to_destination;
+}
 bool PurePursuitController::transformPose(
   const std::shared_ptr<tf2_ros::Buffer> tf,
   const std::string frame,

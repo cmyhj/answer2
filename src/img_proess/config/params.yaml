@@ -1,6 +1,6 @@
 robot_serial_node:
   ros__parameters:
-    serial_name: /dev/pts/7
+    serial_name: /dev/pts/2
 
 bt_navigator:
   ros__parameters:
@@ -125,14 +125,14 @@ controller_server:
     general_goal_checker:
         stateful: True
         plugin: "nav2_controller::SimpleGoalChecker"
-        xy_goal_tolerance: 0.1
+        xy_goal_tolerance: 0.2
         yaw_goal_tolerance: 6.0
         # DWB parameters
     FollowPath:
       plugin: "nav2_pure_pursuit_controller::PurePursuitController" # In Iron and older versions, "/" was used instead of "::"
       debug_trajectory_details: True
       desired_linear_vel: 1.0
-      lookahead_dist: 1.0
+      lookahead_dist: 1.1
       max_angular_vel: 1.0
       transform_tolerance: 1.0
       target_xy_tolerance: 0.2
@@ -149,7 +149,7 @@ local_costmap:
       width: 1
       height: 1
       resolution: 0.1
-      robot_radius: 0.1
+      robot_radius: 0.0
       plugins: ["static_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
@@ -201,7 +201,7 @@ planner_server:
     planner_plugins: ["GridBased"]
     GridBased:
       plugin: "nav2_navfn_planner/NavfnPlanner"
-      tolerance: 0.05
+      tolerance: 0.1
       use_astar: true # 是否使用A*。如果错误，则使用Dijkstra的扩展。
       allow_unknown: true # 是否允许在未知空间进行规划。
       use_final_approach_orientation: true # 如果为true，则由planner产生的路径的最后姿态将其方向设置为进近方向，即连接路径最后两点的向量的方向

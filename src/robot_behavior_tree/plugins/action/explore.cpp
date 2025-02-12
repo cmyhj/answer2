@@ -31,10 +31,11 @@ namespace nav2_behavior_tree
         is_purple_entry_out_of_range = config().blackboard->get<bool>("is_purple_entry_out_of_range");
         is_green_entry_out_of_range = config().blackboard->get<bool>("is_green_entry_out_of_range");
         is_unexplored_out_of_range = config().blackboard->get<bool>("is_unexplored_out_of_range");
-        if (config().blackboard->get<bool>("is_completed_explored")==true||
-            (config().blackboard->get<bool>("is_base_exist")==true&&
+        if (config().blackboard->get<bool>("is_completed_explored")==true&&
+            config().blackboard->get<bool>("is_base_exist")==true&&
+            config().blackboard->get<double>("enemy_base_pose_x")!=1000&&
             (is_green_entry_out_of_range==true||
-             is_purple_entry_out_of_range==true))){
+             is_purple_entry_out_of_range==true)){
             std::cout<<"已经完全探索"<<std::endl;
             return BT::NodeStatus::FAILURE;
         }
